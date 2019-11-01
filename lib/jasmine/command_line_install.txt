@@ -4,10 +4,11 @@ To run the server:
 
 rake jasmine
 
-To run the automated CI task with PhantomJS:
+To run the automated CI task with Chrome Headless:
 
 rake jasmine:ci
 
 To install some example javascripts and specs:
 
 jasmine examples
+

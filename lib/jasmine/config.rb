@@ -71,23 +71,7 @@ module Jasmine
     end
 
     @config.runner = lambda do |formatter, jasmine_server_url|
-      case @config.runner_browser
-      when :phantomjs
-        Jasmine::Runners::PhantomJs.new(formatter,
-                                        jasmine_server_url,
-                                        @config.prevent_phantom_js_auto_install,
-                                        @config.show_console_log,
-                                        @config.phantom_config_script,
-                                        @config.show_full_stack_trace,
-                                        @config.phantom_cli_options)
-      when :chromeheadless
-        Jasmine::Runners::ChromeHeadless.new(formatter,
-                                          jasmine_server_url,
-                                          @config)
-      else
-        raise "Jasmine.config.runner_browser should be either phantomjs or chromeheadless"
-      end
-
+      Jasmine::Runners::ChromeHeadless.new(formatter, jasmine_server_url, @config)
     end
   end
 
@@ -122,8 +106,6 @@ module Jasmine
         config.stop_spec_on_expectation_failure = yaml_config.stop_spec_on_expectation_failure
         config.stop_on_spec_failure = yaml_config.stop_on_spec_failure
         config.random = yaml_config.random
-        config.phantom_config_script = yaml_config.phantom_config_script
-        config.phantom_cli_options = yaml_config.phantom_cli_options
 
         config.rack_options = yaml_config.rack_options
       end

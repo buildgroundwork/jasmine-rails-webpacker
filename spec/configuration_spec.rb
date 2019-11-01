@@ -143,14 +143,6 @@ describe Jasmine::Configuration do
     end
   end
 
-  describe 'prevent phantomjs auto install' do
-    it 'returns value if set' do
-      config = Jasmine::Configuration.new()
-      config.prevent_phantom_js_auto_install = true
-      expect(config.prevent_phantom_js_auto_install).to eq true
-    end
-  end
-
   describe 'show full stack trace' do
     it 'returns value if set' do
       config = Jasmine::Configuration.new()

@@ -1,4 +1,3 @@
-# require 'phantomjs'
 require "socket"
 
 module Jasmine

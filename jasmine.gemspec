@@ -22,15 +22,8 @@ Gem::Specification.new do |s|
   s.require_paths      = ["lib"]
   s.rdoc_options       = ["--charset=UTF-8"]
 
-  case ENV['RAILS_VERSION']
-  when 'pojs'
-  when 'rails4'
-    s.add_development_dependency 'rails', '>= 4.2', '< 5.0.0'
-  when 'rails5'
-    s.add_development_dependency 'rails', '>= 5', '< 6.0.0'
-  else #default to rails 6
-    s.add_development_dependency 'rails', '>= 6', '< 7.0.0'
-  end
+  # Rails 6 only
+  s.add_development_dependency 'rails', '>= 6', '< 7.0.0'
 
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'multi_json'
@@ -40,5 +33,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'jasmine-core', '~> 3.5.0'
   s.add_dependency 'rack', '>= 1.2.1'
   s.add_dependency 'rake'
-  s.add_dependency 'phantomjs'
+  s.add_dependency 'chrome_remote'
 end
+

@@ -10,18 +10,14 @@ module Jasmine
     attr_accessor :spec_format
     attr_accessor :runner
     attr_accessor :rack_options
-    attr_accessor :prevent_phantom_js_auto_install
     attr_accessor :show_console_log
     attr_accessor :stop_spec_on_expectation_failure
     attr_accessor :stop_on_spec_failure
     attr_accessor :random
-    attr_accessor :phantom_config_script
-    attr_accessor :phantom_cli_options
     attr_accessor :chrome_cli_options
     attr_accessor :chrome_startup_timeout
     attr_accessor :chrome_binary
     attr_accessor :show_full_stack_trace
-    attr_accessor :runner_browser
     attr_reader :rack_apps
 
     def initialize()
@@ -43,16 +39,17 @@ module Jasmine
       @stop_spec_on_expectation_failure = false
       @stop_on_spec_failure = false
       @random = true
-      @phantom_config_script = nil
-      @phantom_cli_options = {}
       @chrome_cli_options = {"no-sandbox" => nil, "headless" => nil, "remote-debugging-port" => 9222}
       @chrome_startup_timeout = 3
       @chrome_binary = nil
-      @runner_browser = :phantomjs
 
       @formatters = [Jasmine::Formatters::Console]
 
       @server_port = 8888
+    end
+
+    def prevent_phantom_js_auto_install=(*)
+      ActiveSupport::Deprecation.warn('This gem no longer supports Phantom JS.  No need to call #prevent_phantom_js_auto_install=')
     end
 
     def css_files
