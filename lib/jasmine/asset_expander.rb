@@ -3,6 +3,7 @@ module Jasmine
     def expand(src_dir, src_path)
       pathname = src_path.gsub(/^\/?assets\//, '')
 
+      asset_bundle = RailsAssetBundle.new
       asset_bundle.assets(pathname).flat_map { |asset|
         "/#{asset.gsub(/^\//, '')}"
       }
@@ -10,14 +11,7 @@ module Jasmine
 
     private
 
-    UnsupportedRailsVersion = Class.new(StandardError)
-
-    def asset_bundle
-      return Rails4Or5Or6AssetBundle.new if Jasmine::Dependencies.rails4? || Jasmine::Dependencies.rails5? || Jasmine::Dependencies.rails6?
-      raise UnsupportedRailsVersion, "Jasmine only supports the asset pipeline for Rails 4. - 6"
-    end
-
-    class Rails4Or5Or6AssetBundle
+    class RailsAssetBundle
       def assets(pathname)
         if pathname =~ /\.css$/
           context.get_stylesheet_assets(pathname.gsub(/\.css$/, ''))
