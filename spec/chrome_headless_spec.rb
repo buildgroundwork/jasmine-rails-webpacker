@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Jasmine::Runners::ChromeHeadless do
-
   let(:config) {
     {
       show_console_log: nil,
@@ -46,5 +45,5 @@ describe Jasmine::Runners::ChromeHeadless do
       expect(runner.cli_options_string).to eq("--no-sandbox --headless --remote-debugging-port=9222")
     end
   end
-
 end
+

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Jasmine::Application" do
-
   it "includes no-cache headers for specs" do
     pending
     get "/__spec__/example_spec.js"
@@ -11,5 +10,5 @@ describe "Jasmine::Application" do
       expect(last_response.headers[key]).to eq 'no-cache'
     end
   end
-
 end
+
