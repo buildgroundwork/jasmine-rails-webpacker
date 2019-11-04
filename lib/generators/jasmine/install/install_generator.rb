@@ -6,6 +6,10 @@ module Jasmine
         @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
       end
 
+      def install_jasmine_core
+        run "yarn add --dev jasmine-core"
+      end
+
       def copy_spec_files
         directory 'spec'
       end

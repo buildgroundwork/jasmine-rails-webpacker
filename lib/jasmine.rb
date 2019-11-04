@@ -1,11 +1,10 @@
 [
   'base',
-  'core_configuration',
+  'core',
   'configuration',
   'config',
   'application',
   'server',
-  'command_line_tool',
   'page',
   'path_mapper',
   'asset_pipeline_mapper',

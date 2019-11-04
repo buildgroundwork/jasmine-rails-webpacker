@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 describe Jasmine do
+  before do
+    class << Rails
+      define_method(:root) { '__RAILS_ROOT' }
+    end
+  end
+
+  after do
+    class << Rails
+      remove_method(:root)
+    end
+  end
+
   it "should provide the root path" do
     allow(File).to receive(:dirname).and_return('lib/jasmine')
     expect(File).to receive(:expand_path) { |path| path }

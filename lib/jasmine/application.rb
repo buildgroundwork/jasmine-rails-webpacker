@@ -1,6 +1,5 @@
 require 'rack'
 require 'rack/utils'
-require 'jasmine-core'
 require 'rack/jasmine/runner'
 require 'rack/jasmine/focused_suite'
 require 'rack/jasmine/cache_control'
@@ -19,3 +18,4 @@ module Jasmine
     end
   end
 end
+

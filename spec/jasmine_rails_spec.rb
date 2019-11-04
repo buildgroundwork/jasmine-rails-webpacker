@@ -32,11 +32,9 @@ describe 'A Rails app' do
 
     FileUtils.mkdir_p(File.join(Dir.pwd, 'tmp', 'pids'))
 
-    base = File.absolute_path(File.join(__FILE__, '../..'))
     # Add jasmine to the Gemfile, and update the puma version.
     open('Gemfile', 'a') { |f|
-      f.puts "gem 'jasmine', :path => '#{base}'"
-      f.puts "gem 'jasmine-core', :git => 'http://github.com/jasmine/jasmine.git'"
+      f.puts "gem 'jasmine', :path => '#{File.absolute_path(File.join(__FILE__, '../..'))}'"
       f.flush
     }
 

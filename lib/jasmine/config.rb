@@ -11,7 +11,7 @@ module Jasmine
     def initialize_config
       return if @config
       @config = Jasmine::Configuration.new
-      core_config = Jasmine::CoreConfiguration.new
+      core = Jasmine::Core.new(Rails.root)
 
       @config.add_path_mapper(Jasmine::PathMapper.method(:new))
 
@@ -22,11 +22,11 @@ module Jasmine
       @config.runner_boot_path = runner_boot_path = '/__runner_boot__'
       @config.image_path = image_path = '/__images__'
 
-      @config.jasmine_dir = core_config.path
-      @config.boot_dir = core_config.boot_dir
-      @config.boot_files = lambda { core_config.boot_files }
-      @config.jasmine_files = lambda { core_config.js_files }
-      @config.jasmine_css_files = lambda { core_config.css_files }
+      @config.jasmine_dir = core.path
+      @config.boot_dir = core.boot_dir
+      @config.boot_files = lambda { core.boot_files }
+      @config.jasmine_files = lambda { core.js_files }
+      @config.jasmine_css_files = lambda { core.css_files }
       @config.add_rack_path(jasmine_path, lambda { Rack::File.new(config.jasmine_dir) })
       @config.add_rack_path(boot_path, lambda { Rack::File.new(config.boot_dir) })
       @config.add_rack_path(runner_boot_path, lambda { Rack::File.new(config.runner_boot_dir) })
@@ -42,7 +42,7 @@ module Jasmine
       else
         @config.add_rack_path(spec_path, lambda { Rack::File.new(config.spec_dir) })
       end
-      @config.add_rack_path(image_path, lambda { Rack::File.new(core_config.images_dir) })
+      @config.add_rack_path(image_path, lambda { Rack::File.new(core.images_dir) })
       @config.add_rack_path(src_path, lambda {
         Rack::Cascade.new([
           Rack::URLMap.new('/' => Rack::File.new(config.src_dir)),
@@ -124,3 +124,4 @@ module Jasmine
     end
   end
 end
+
