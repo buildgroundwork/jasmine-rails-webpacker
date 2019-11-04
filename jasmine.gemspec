@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "jasmine/version"
-require "jasmine/ruby_versions"
 
 Gem::Specification.new do |s|
   s.name               = %q{jasmine}

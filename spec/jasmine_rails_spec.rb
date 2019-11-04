@@ -1,7 +1,6 @@
 require 'spec_helper'
 require 'net/http'
 require 'yaml'
-require 'jasmine/ruby_versions'
 
 describe 'A Rails app' do
   def bundle_install
