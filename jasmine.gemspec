@@ -23,16 +23,13 @@ Gem::Specification.new do |s|
   s.rdoc_options       = ["--charset=UTF-8"]
 
   # Rails 6 only
-  s.add_development_dependency 'rails', '>= 6', '< 7.0.0'
+  s.add_dependency 'rails', '>= 6', '< 7.0.0'
+  s.add_dependency 'chrome_remote'
+  s.add_dependency 'jasmine-core', '~> 3.5.0'
 
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'multi_json'
   s.add_development_dependency 'rspec', '>= 2.5.0'
   s.add_development_dependency 'nokogiri'
-
-  s.add_dependency 'jasmine-core', '~> 3.5.0'
-  s.add_dependency 'rack', '>= 1.2.1'
-  s.add_dependency 'rake'
-  s.add_dependency 'chrome_remote'
 end
 
