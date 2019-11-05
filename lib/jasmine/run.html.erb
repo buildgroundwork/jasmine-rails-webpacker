@@ -12,9 +12,13 @@
   <script src="<%= js_file %>" type="text/javascript"></script>
   <% end %>
 
+  <%= stylesheet_pack_tag 'jasmine' %>
 </head>
+
 <!-- TODO: turbolinks breaks spec filter links -->
 <body data-no-turbolink data-turbolinks="false">
-<div id="jasmine_content"></div>
+  <div id="jasmine_content"></div>
+  <%= javascript_pack_tag 'jasmine' %>
 </body>
 </html>
+

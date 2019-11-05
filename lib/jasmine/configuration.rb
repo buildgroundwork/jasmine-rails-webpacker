@@ -32,7 +32,6 @@ module Jasmine
       @src_files = lambda { [] }
       @helper_files = lambda { [] }
       @spec_files = lambda { [] }
-      @testing_files = lambda { helper_files.call + spec_files.call}
       @runner = lambda { |config| }
       @rack_options = {}
       @show_console_log = false
@@ -61,8 +60,7 @@ module Jasmine
       map(@jasmine_files, :jasmine) +
         map(@boot_files, :boot) +
         map(@runner_boot_files, :runner_boot) +
-        map(@src_files, :src) +
-        map(@testing_files, :spec)
+        map(@src_files, :src)
     end
 
     def rack_path_map

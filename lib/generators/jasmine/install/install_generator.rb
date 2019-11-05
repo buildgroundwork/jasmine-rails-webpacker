@@ -10,7 +10,8 @@ module Jasmine
         run "yarn add --dev jasmine-core"
       end
 
-      def copy_spec_files
+      def copy_jasmine_files
+        directory 'app'
         directory 'spec'
       end
 

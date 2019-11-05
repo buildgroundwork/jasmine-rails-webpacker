@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
 
   # Rails 6 only
   s.add_dependency 'rails', '>= 6', '< 7.0.0'
+  s.add_dependency 'webpacker'
   s.add_dependency 'chrome_remote'
 
   s.add_development_dependency 'rack-test'

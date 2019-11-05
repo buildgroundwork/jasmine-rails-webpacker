@@ -20,6 +20,18 @@ describe 'A Rails app' do
     end
   end
 
+  def install_jasmine
+    `bundle exec rails g jasmine:install`
+    expect($?).to be_success
+    expect(File.exists?('spec/javascripts/helpers/.gitkeep')).to be_truthy
+    expect(File.exists?('spec/javascripts/support/jasmine.yml')).to be_truthy
+    `bundle exec rails g jasmine:examples`
+    expect(File.exists?('app/javascript/jasmine_examples/Player.js')).to be_truthy
+    expect(File.exists?('app/javascript/jasmine_examples/Song.js')).to be_truthy
+    expect(File.exists?('spec/javascripts/jasmine_examples/PlayerSpec.js')).to be_truthy
+    expect(File.exists?('spec/javascripts/helpers/jasmine_examples/SpecHelper.js')).to be_truthy
+  end
+
   before :all do
     temp_dir_before
     Dir::chdir @tmp
@@ -27,7 +39,7 @@ describe 'A Rails app' do
     # We want the webpack install, but creating a Rails app with Webpack and
     # the --skip-bundle flag will fail.  So, we'll create the app without
     # Webpack, and then install Webpack after the bundle.
-    `rails new rails-example --skip-bundle  --skip-active-record --skip-bootsnap --skip-webpack-install --skip-spring`
+    `rails new rails-example --skip-bundle  --skip-active-record --skip-bootsnap --skip-webpack-install --skip-spring --skip-turbolinks`
     Dir::chdir File.join(@tmp, 'rails-example')
 
     FileUtils.mkdir_p(File.join(Dir.pwd, 'tmp', 'pids'))
@@ -41,15 +53,7 @@ describe 'A Rails app' do
     Bundler.with_clean_env do
       bundle_install
       install_webpacker
-      `bundle exec rails g jasmine:install`
-      expect($?).to eq 0
-      expect(File.exists?('spec/javascripts/helpers/.gitkeep')).to eq true
-      expect(File.exists?('spec/javascripts/support/jasmine.yml')).to eq true
-      `bundle exec rails g jasmine:examples`
-      expect(File.exists?('app/assets/javascripts/jasmine_examples/Player.js')).to eq true
-      expect(File.exists?('app/assets/javascripts/jasmine_examples/Song.js')).to eq true
-      expect(File.exists?('spec/javascripts/jasmine_examples/PlayerSpec.js')).to eq true
-      expect(File.exists?('spec/javascripts/helpers/jasmine_examples/SpecHelper.js')).to eq true
+      install_jasmine
     end
   end
 

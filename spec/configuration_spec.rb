@@ -12,9 +12,6 @@ describe Jasmine::Configuration do
       def map_jasmine_paths(paths)
         paths.map { |f| "mapped_jasmine/#{f}" }
       end
-      def map_spec_paths(paths)
-        paths.map { |f| "mapped_spec/#{f}" }
-      end
       def map_boot_paths(paths)
         paths.map { |f| "mapped_boot/#{f}" }
       end
@@ -30,9 +27,6 @@ describe Jasmine::Configuration do
       end
       def map_jasmine_paths(paths)
         paths.map { |f| "#{f}/jasmine" }
-      end
-      def map_spec_paths(paths)
-        paths.map { |f| "#{f}/spec" }
       end
       def map_boot_paths(paths)
         paths.map { |f| "#{f}/boot" }
@@ -74,9 +68,7 @@ describe Jasmine::Configuration do
       config.helper_files = lambda { %w(helper) }
       expect(config.js_files).to eq %w(
         mapped_jasmine/jasmine/jasmine
-        mapped_boot/boot/boot mapped_src/src/src
-        mapped_spec/helper/spec
-        mapped_spec/spec/spec)
+        mapped_boot/boot/boot mapped_src/src/src)
     end
   end
 

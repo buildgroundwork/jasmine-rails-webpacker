@@ -8,10 +8,6 @@ module Jasmine
       map(paths, @config.src_dir, @config.src_path)
     end
 
-    def map_spec_paths(paths)
-      map(paths, @config.spec_dir, @config.spec_path)
-    end
-
     def map_boot_paths(paths)
       map(paths, @config.boot_dir, @config.boot_path)
     end
@@ -36,3 +32,4 @@ module Jasmine
     end
   end
 end
+

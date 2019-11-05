@@ -11,6 +11,9 @@ module Jasmine
       config.rack_apps.each do |app_config|
         builder.use(app_config[:app], *app_config[:args], &app_config[:block])
       end
+
+      builder.use(Rack::Static, urls: ['/packs'], root: Rails.application.paths['public'].first)
+
       config.rack_path_map.each do |path, handler|
         builder.map(path) { run handler.call }
       end

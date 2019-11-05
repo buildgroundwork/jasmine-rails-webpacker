@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 describe 'Jasmine::Application' do
+  let(:paths) { { 'public' => %w(foo bar) } }
+  before do
+    rails_application = double(:application, paths: paths)
+    Rails.singleton_class.class_eval do
+      define_method(:application) { rails_application }
+    end
+  end
+
+  after do
+    class << Rails
+      remove_method(:application)
+    end
+  end
+
   it 'should map paths provided by the config' do
     handler1 = double(:handler1)
     handler2 = double(:handler2)
@@ -8,7 +22,7 @@ describe 'Jasmine::Application' do
     app2 = double(:app2)
     rack_path_map = {'/foo' => lambda { handler1 }, '/bar' => lambda { handler2 }}
     config = double(:config, :rack_path_map => rack_path_map, :rack_apps => [])
-    builder = double('Rack::Builder.new')
+    builder = double('Rack::Builder.new', use: nil)
     #Rack::Builder instance evals, so builder.run is invalid syntax,
     #this is the only way to stub out the 'run' dsl it gives to the block.
     allow(Jasmine::Application).to receive(:run).with(handler1).and_return(app1)
@@ -39,7 +53,7 @@ describe 'Jasmine::Application' do
         { :app => app3, :args => [:foo, :bar], :block => block },
         { :app => app4, :args => [:bar] }
     ])
-    builder = double('Rack::Builder.new')
+    builder = double('Rack::Builder.new', use: nil)
     expect(builder).to receive(:use).with(app1)
     expect(builder).to receive(:use) do |*args, &arg_block|
       expect(args).to eq [app2]
@@ -52,4 +66,12 @@ describe 'Jasmine::Application' do
     expect(builder).to receive(:use).with(app4, :bar)
     expect(Jasmine::Application.app(config, builder)).to eq builder
   end
+
+  it "should insert handler for static assets served from the 'packs' directory" do
+    builder = double('Rack::Builder.new', use: nil)
+    config = double(:config, :rack_path_map => [], :rack_apps => [])
+    expect(builder).to receive(:use).with(Rack::Static, urls: ['/packs'], root: paths['public'].first)
+    Jasmine::Application.app(config, builder)
+  end
 end
+
