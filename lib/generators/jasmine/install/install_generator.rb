@@ -15,6 +15,11 @@ module Jasmine
         directory 'spec'
       end
 
+      def add_spec_directory_to_resolved_modules
+        content = "environment.resolvedModules.append('spec', 'spec');\n"
+        inject_into_file('config/webpack/test.js', content, after: /const environment =.*\n/)
+      end
+
       def app_name
         Rails.application.class.name
       end
