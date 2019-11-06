@@ -1,77 +1,6 @@
 require 'spec_helper'
 
 describe Jasmine::Configuration do
-  let(:test_mapper1) do
-    Class.new do
-      def initialize(config)
-        @config = config
-      end
-      def map_src_paths(paths)
-        paths.map { |f| "mapped_src/#{f}" }
-      end
-      def map_jasmine_paths(paths)
-        paths.map { |f| "mapped_jasmine/#{f}" }
-      end
-      def map_boot_paths(paths)
-        paths.map { |f| "mapped_boot/#{f}" }
-      end
-    end
-  end
-  let(:test_mapper2) do
-    Class.new do
-      def initialize(config)
-        @config = config
-      end
-      def map_src_paths(paths)
-        paths.map { |f| "#{f}/src" }
-      end
-      def map_jasmine_paths(paths)
-        paths.map { |f| "#{f}/jasmine" }
-      end
-      def map_boot_paths(paths)
-        paths.map { |f| "#{f}/boot" }
-      end
-    end
-  end
-  let(:test_mapper3) do
-    Class.new do
-      def initialize(config)
-        @config = config
-      end
-    end
-  end
-
-  describe 'returning css files' do
-    it 'returns mapped jasmine_css_files + css_files' do
-      config = Jasmine::Configuration.new()
-      config.add_path_mapper(lambda { |c| test_mapper1.new(c) })
-      config.add_path_mapper(lambda { |c| test_mapper2.new(c) })
-      config.add_path_mapper(lambda { |c| test_mapper3.new(c) })
-      expect(config.css_files).to eq []
-      config.jasmine_css_files = lambda { %w(jasmine_css) }
-      config.css_files = lambda { %w(css) }
-      expect(config.css_files).to eq %w(mapped_jasmine/jasmine_css/jasmine mapped_src/css/src)
-    end
-  end
-
-  describe 'returning javascript files' do
-    it 'returns the jasmine core files, then srcs, then specs, then boot' do
-      config = Jasmine::Configuration.new()
-      config.add_path_mapper(lambda { |c| test_mapper1.new(c) })
-      config.add_path_mapper(lambda { |c| test_mapper2.new(c) })
-      config.add_path_mapper(lambda { |c| test_mapper3.new(c) })
-      expect(config.js_files).to eq []
-      config.jasmine_files = lambda { %w(jasmine) }
-      config.src_files = lambda  { %w(src) }
-      config.boot_files = lambda { %w(boot) }
-      config.spec_files = lambda { %w(spec) }
-      config.helper_files = lambda { %w(helper) }
-      expect(config.js_files).to eq %w(
-        mapped_jasmine/jasmine/jasmine
-        mapped_boot/boot/boot mapped_src/src/src)
-    end
-  end
-
   describe 'returning rack map' do
     it 'permits arbitrary rack app path mapping' do
       config = Jasmine::Configuration.new()
@@ -194,9 +123,10 @@ describe Jasmine::Configuration do
       expect(config.runner).to eq foo
     end
 
-    it 'does nothing by default' do
+    it 'should return a chromeheadless runner by default' do
       config = Jasmine::Configuration.new
-      config.runner.call('hi')
+      runner = config.runner.call('formatter', 'url')
+      expect(runner).to be_a(Jasmine::Runners::ChromeHeadless)
     end
   end
 end

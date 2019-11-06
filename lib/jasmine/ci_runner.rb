@@ -19,10 +19,7 @@ module Jasmine
       url = "#{config.host}:#{config.port(:ci)}/?throwFailures=#{config.stop_spec_on_expectation_failure}&failFast=#{config.stop_on_spec_failure}&random=#{@random}#{@seed}"
       runner = config.runner.call(Jasmine::Formatters::Multi.new(formatters), url)
 
-      if runner.respond_to?(:boot_js)
-        config.runner_boot_dir = File.dirname(runner.boot_js)
-        config.runner_boot_files = lambda { [runner.boot_js] }
-      end
+      # TODO: Inject runner's boot.js here
 
       server = @server_factory.new(config.port(:ci), app, config.rack_options)
 

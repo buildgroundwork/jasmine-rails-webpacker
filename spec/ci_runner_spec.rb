@@ -61,18 +61,6 @@ describe Jasmine::CiRunner do
     expect(runner).to have_received(:run)
   end
 
-  it 'adds runner boot files when necessary' do
-    expect(runner).to receive(:boot_js).at_least(:once) { 'foo/bar/baz.js' }
-    expect(config).to receive(:runner_boot_dir=).with('foo/bar')
-    expect(config).to receive(:runner_boot_files=) do |proc|
-      expect(proc.call).to eq ['foo/bar/baz.js']
-    end
-
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
-
-    ci_runner.run
-  end
-
   it 'returns true for a successful run' do
     allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, :succeeded? => true) }
 

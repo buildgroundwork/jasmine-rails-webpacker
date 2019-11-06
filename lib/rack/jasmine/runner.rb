@@ -22,6 +22,6 @@ module Rack
                ["File not found: #{@path}\n"]]
       end
     end
-
   end
 end
+
