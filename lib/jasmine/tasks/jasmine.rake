@@ -15,27 +15,6 @@ with either 'jasmine init' or 'rails g jasmine:install'.
 end
 
 namespace :jasmine do
-  task :set_test_env do
-    Rails.env = ENV['RAILS_ENV'] = ENV['NODE_ENV'] = 'test'
-    # Force Webpacker to reload the instance in test mode.
-    Webpacker.instance = nil
-  end
-
-  task :configure do
-    require 'jasmine/config'
-
-    begin
-      Jasmine.load_configuration_from_yaml(ENV['JASMINE_CONFIG_PATH'])
-    rescue Jasmine::ConfigNotFound => e
-      puts e.message
-      exit 1
-    end
-  end
-
-  task require: [:environment, :set_test_env] do
-    require 'jasmine'
-  end
-
   task :require_json do
     begin
       require 'json'
@@ -45,15 +24,29 @@ namespace :jasmine do
     end
   end
 
+  task :set_test_env do
+    Rails.env = ENV['RAILS_ENV'] = ENV['NODE_ENV'] = 'test'
+    # Force Webpacker to reload the instance in test mode.
+    Webpacker.instance = nil
+  end
+
+  task require: [:environment, :set_test_env] do
+    require 'jasmine'
+  end
+
+  task configure: :require do
+    Jasmine.configure!
+  end
+
   task :configure_plugins
 
   desc 'Run jasmine tests in a browser, random and seed override config'
-  task :ci, [:random, :seed] => %w(jasmine:require_json jasmine:require jasmine:configure jasmine:configure_plugins) do |t, args|
+  task :ci, [:random, :seed] => %w(jasmine:require_json jasmine:configure jasmine:configure_plugins) do |t, args|
     ci_runner = Jasmine::CiRunner.new(Jasmine.config, args.to_hash)
     exit(1) unless ci_runner.run
   end
 
-  task :server => %w(jasmine:require jasmine:configure jasmine:configure_plugins) do
+  task :server => %w(jasmine:configure jasmine:configure_plugins) do
     config = Jasmine.config
     port = config.port(:server)
     server = Jasmine::Server.new(port, Jasmine::Application.app(Jasmine.config), config.rack_options)

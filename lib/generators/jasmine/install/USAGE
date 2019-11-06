@@ -5,5 +5,5 @@ Example:
     rails generate jasmine:install
 
     This will create:
-        spec/javascripts/support/jasmine.yml
+        spec/javascripts/support/jasmine_helper.rb
         spec/javascripts/helpers/.gitkeep

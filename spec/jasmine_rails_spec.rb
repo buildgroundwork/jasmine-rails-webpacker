@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'net/http'
-require 'yaml'
 
 describe 'A Rails app' do
   def bundle_install
@@ -24,7 +23,7 @@ describe 'A Rails app' do
     `bundle exec rails g jasmine:install`
     expect($?).to be_success
     expect(File.exists?('spec/javascripts/helpers/.gitkeep')).to be_truthy
-    expect(File.exists?('spec/javascripts/support/jasmine.yml')).to be_truthy
+    expect(File.exists?('spec/javascripts/support/jasmine_helper.rb')).to be_truthy
     `bundle exec rails g jasmine:examples`
     expect(File.exists?('app/javascript/jasmine_examples/Player.js')).to be_truthy
     expect(File.exists?('app/javascript/jasmine_examples/Song.js')).to be_truthy
@@ -78,12 +77,9 @@ describe 'A Rails app' do
 
   it "rake jasmine:ci returns proper exit code when specs fail" do
     Bundler.with_clean_env do
-      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'failing_test.js'), File.join('spec', 'javascripts'))
-      failing_yaml = custom_jasmine_config('failing') do |jasmine_config|
-        jasmine_config['spec_files'] << 'failing_test.js'
-      end
+      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'failing_spec.js'), File.join('spec', 'javascripts'))
 
-      output = `bundle exec rake jasmine:ci JASMINE_CONFIG_PATH=#{failing_yaml}`
+      output = `bundle exec rake jasmine:ci`
       expect($?).to_not be_success
       expect(output).to include('6 specs, 1 failure')
     end
@@ -91,11 +87,9 @@ describe 'A Rails app' do
 
   it "rake jasmine:ci runs specs when an error occurs in the javascript" do
     Bundler.with_clean_env do
-      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'exception_test.js'), File.join('spec', 'javascripts'))
-      exception_yaml = custom_jasmine_config('exception') do |jasmine_config|
-        jasmine_config['spec_files'] << 'exception_test.js'
-      end
-      output = `bundle exec rake jasmine:ci JASMINE_CONFIG_PATH=#{exception_yaml}`
+      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'exception_spec.js'), File.join('spec', 'javascripts'))
+
+      output = `bundle exec rake jasmine:ci`
       expect($?).to_not be_success
       expect(output).to include('5 specs, 0 failures')
     end

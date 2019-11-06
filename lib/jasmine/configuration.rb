@@ -1,14 +1,31 @@
 module Jasmine
+  class << self
+    def configure!
+      config_file = Rails.root.join('spec', 'javascripts', 'support', 'jasmine_helper.rb')
+      require config_file if File.exists?(config_file)
+    end
+
+    def configure(&block)
+      block.call(self.config)
+    end
+
+    def config
+      @config ||= Jasmine::Configuration.new
+    end
+  end
+
   class Configuration
-    attr_accessor :formatters
-    attr_accessor :host
-    attr_accessor :spec_format
-    attr_writer :runner
-    attr_accessor :rack_options
     attr_accessor :show_console_log
     attr_accessor :stop_spec_on_expectation_failure
     attr_accessor :stop_on_spec_failure
     attr_accessor :random
+
+    attr_writer :rack_options
+
+    attr_accessor :formatters
+    attr_accessor :host
+    attr_accessor :spec_format
+    attr_writer :runner
     attr_accessor :chrome_cli_options
     attr_accessor :chrome_startup_timeout
     attr_accessor :chrome_binary
@@ -16,24 +33,23 @@ module Jasmine
     attr_reader :rack_apps
 
     def initialize
+      @random = true
+
       @rack_paths = {}
       @rack_apps = []
-      @rack_options = {}
-      @show_console_log = false
-      @stop_spec_on_expectation_failure = false
-      @stop_on_spec_failure = false
-      @random = true
       @chrome_cli_options = {"no-sandbox" => nil, "headless" => nil, "remote-debugging-port" => 9222}
       @chrome_startup_timeout = 3
       @chrome_binary = nil
-
       @formatters = [Jasmine::Formatters::Console]
-
       @server_port = 8888
     end
 
     def runner
       @runner ||= default_runner
+    end
+
+    def rack_options
+      @rack_options ||= {}
     end
 
     def prevent_phantom_js_auto_install=(*)
