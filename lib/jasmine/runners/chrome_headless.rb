@@ -9,7 +9,7 @@ module Jasmine
         @config = config
         @show_console_log = @config.show_console_log
         @show_full_stack_trace = @config.show_full_stack_trace
-        @cli_options = @config.chrome_cli_options || {}
+        @cli_options = @config.chrome_options[:cli] || {}
       end
 
       def run
@@ -56,7 +56,7 @@ module Jasmine
       end
 
       def chrome_binary
-        config.chrome_binary || find_chrome_binary
+        config.chrome_options[:binary] || find_chrome_binary
       end
 
       def find_chrome_binary
@@ -78,7 +78,7 @@ module Jasmine
 
       def wait_for_chrome_to_start_debug_socket
         time = Time.now
-        while Time.now - time < config.chrome_startup_timeout
+        while Time.now - time < config.chrome_options[:startup_timeout]
           begin;
             conn = TCPSocket.new('localhost', 9222);
           rescue SocketError;
@@ -95,7 +95,7 @@ module Jasmine
             return
           end
         end
-        raise "Chrome did't seam to start the webSocketDebugger at port: 9222, timeout #{config.chrome_startup_timeout}sec"
+        raise "Chrome did't seem to start the webSocketDebugger at port: 9222, timeout #{config.chrome_options[:startup_timeout]}sec"
       end
 
       def boot_js

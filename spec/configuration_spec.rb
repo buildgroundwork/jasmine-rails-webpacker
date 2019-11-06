@@ -1,132 +1,152 @@
 require 'spec_helper'
 
 describe Jasmine::Configuration do
-  describe 'returning rack map' do
-    it 'permits arbitrary rack app path mapping' do
-      config = Jasmine::Configuration.new()
-      result = double
-      config.add_rack_path('some/path', lambda { result })
-      map = config.rack_path_map
-      expect(map['some/path']).to be
-      expect(map['some/path'].call).to eq result
+  let(:config) { described_class.new }
+
+  describe "#use_additional_rack_apps" do
+    subject { -> { config.use_additional_rack_apps(builder) } }
+    let(:builder) { double(:builder, use: nil, map: nil) }
+
+    context "with a custom app in the config" do
+      let(:rack_app) { double(:rack_app) }
+
+      context "specified with no args" do
+        before { config.add_rack_app(rack_app) }
+
+        it "should use the specified app" do
+          subject.call
+          expect(builder).to have_received(:use).with(rack_app)
+        end
+      end
+
+      context "specified with args" do
+        let(:app_args) { %i(foo, bar) }
+        before { config.add_rack_app(rack_app, *app_args) }
+
+        it "should use the specified app" do
+          subject.call
+          expect(builder).to have_received(:use) do |*used_args, &arg_block|
+            used_args == [rack_app, *app_args] && arg_block == nil
+          end
+        end
+      end
+
+      context "specified with args and a block" do
+        let(:app_args) { %i(foo, bar) }
+        let(:app_block) { -> { true } }
+        before { config.add_rack_app(rack_app, *app_args) }
+
+        it "should use the specified app" do
+          subject.call
+          expect(builder).to have_received(:use) do |*used_args, &arg_block|
+            used_args == [rack_app, *app_args] && arg_block == app_block
+          end
+        end
+      end
     end
   end
 
-  describe 'rack apps' do
-    it 'permits the addition of arbitary rack apps' do
-      config = Jasmine::Configuration.new()
-      app = double
-      config.add_rack_app(app)
-      expect(config.rack_apps).to eq [{ :app => app, :args => [], :block => nil }]
-    end
+  describe "#map_additional_rack_paths" do
+    subject { -> { config.map_additional_rack_paths(builder) } }
+    let(:builder) { double(:builder, use: nil, map: nil) }
 
-    it 'permits the addition of arbitary rack apps with a config block' do
-      config = Jasmine::Configuration.new()
-      app = double
-      block = lambda { 'foo' }
-      config.add_rack_app(app, &block)
-      expect(config.rack_apps).to eq [{ :app => app, :args => [], :block => block }]
-    end
+    context "with a custom path in the config" do
+      let(:path) { '/foo' }
+      let(:handler_proc) { -> { handler } }
+      let(:handler) { double(:handler) }
+      before { config.add_rack_path(path, handler_proc) }
 
-    it 'permits the addition of arbitary rack apps with arbitrary config' do
-      config = Jasmine::Configuration.new()
-      app = double
-      config.add_rack_app(app, { :foo => 'bar' })
-      expect(config.rack_apps).to eq [{ :app => app, :args => [{ :foo => 'bar' }], :block => nil }]
-    end
-
-    it 'permits the addition of arbitary rack apps with arbitrary config and a config block' do
-      config = Jasmine::Configuration.new()
-      app = double
-      block = lambda { 'foo' }
-      config.add_rack_app(app, { :foo => 'bar' }, &block)
-      expect(config.rack_apps).to eq [{ :app => app, :args => [{ :foo => 'bar' }], :block => block }]
+      it "should map the custom path" do
+        subject.call
+        expect(builder).to have_received(:map) do |mapped_path, mapped_proc|
+          path == mapped_path && handler_proc == mapped_proc
+        end
+      end
     end
   end
 
-  describe 'host' do
-    it 'should default to localhost' do
-      expect(Jasmine::Configuration.new().host).to eq 'http://localhost'
+  describe '#host' do
+    subject { config.host }
+
+    context "when explicitly set" do
+      let(:new_host) { 'http://example.com' }
+      before { config.host = new_host }
+      it { should == new_host }
     end
 
-    it 'returns host if set' do
-      config = Jasmine::Configuration.new()
-      config.host = 'foo'
-      expect(config.host).to eq 'foo'
-    end
-  end
-
-  describe 'spec format' do
-    it 'returns value if set' do
-      config = Jasmine::Configuration.new()
-      config.spec_format = 'fish'
-      expect(config.spec_format).to eq 'fish'
+    context "when not explicitly set" do
+      it { should == 'http://localhost' }
     end
   end
 
-  describe 'show full stack trace' do
-    it 'returns value if set' do
-      config = Jasmine::Configuration.new()
-      config.show_full_stack_trace = true
-      expect(config.show_full_stack_trace).to eq true
+  describe "#port" do
+    subject { config.port(type) }
+
+    context "with type == :server" do
+      let(:type) { :server }
+
+      context "when the server port has been explicitly set" do
+        let(:new_port) { 666 }
+        before { config.server_port = 666 }
+        it { should == new_port }
+      end
+
+      context "when the server port has not been explicitly set" do
+        it { should == 8888 }
+      end
+    end
+
+    context "with type == :ci" do
+      let(:type) { :ci }
+
+      context "when the CI port has been explicitly set" do
+        let(:new_port) { 777 }
+        before { config.ci_port = 777 }
+        it { should == new_port }
+      end
+
+      context "when the CI port has not been explicitly set" do
+        let(:random_ports) { [1234, 5678] }
+        before { allow(Jasmine).to receive(:find_unused_port).and_return(*random_ports) }
+
+        it { should == random_ports.first }
+
+        context "when called multiple times" do
+          before { config.port(:ci) }
+          it { should == random_ports.first }
+        end
+      end
     end
   end
 
-  describe 'jasmine ports' do
-    it 'returns new CI port and caches return value' do
-      config = Jasmine::Configuration.new()
-      allow(Jasmine).to receive(:find_unused_port).and_return('1234')
-      expect(config.port(:ci)).to eq '1234'
-      allow(Jasmine).to receive(:find_unused_port).and_return('4321')
-      expect(config.port(:ci)).to eq '1234'
+  describe "#formatters" do
+    subject { config.formatters }
+
+    context "when explicitly set" do
+      let(:new_formatter) { double(:formatter) }
+      before { config.formatters = [new_formatter] }
+      it { should == [new_formatter] }
     end
 
-    it 'returns ci port if configured' do
-      config = Jasmine::Configuration.new()
-      config.ci_port = '5678'
-      allow(Jasmine).to receive(:find_unused_port).and_return('1234')
-      expect(config.port(:ci)).to eq '5678'
-    end
-
-    it 'returns configured server port' do
-      config = Jasmine::Configuration.new()
-      config.server_port = 'fish'
-      expect(config.port(:server)).to eq 'fish'
-    end
-
-    it 'returns default server port' do
-      config = Jasmine::Configuration.new()
-
-      expect(config.port(:server)).to eq 8888
+    context "when not explicitly set" do
+      it { should == [Jasmine::Formatters::Console] }
     end
   end
 
-  describe 'jasmine formatters' do
-    it 'returns value if set' do
-      config = Jasmine::Configuration.new()
-      config.formatters = ['pants']
-      expect(config.formatters).to eq ['pants']
+  describe "#runner" do
+    subject { config.runner }
+
+    context "when explicitly set" do
+      let(:new_runner) { double(:runner) }
+      before { config.runner = new_runner }
+      it { should == new_runner }
     end
 
-    it 'returns defaults' do
-      config = Jasmine::Configuration.new()
-
-      expect(config.formatters).to eq [Jasmine::Formatters::Console]
-    end
-  end
-
-  describe 'custom runner' do
-    it 'stores and returns what is passed' do
-      config = Jasmine::Configuration.new
-      foo = double(:foo)
-      config.runner = foo
-      expect(config.runner).to eq foo
-    end
-
-    it 'should return a chromeheadless runner by default' do
-      config = Jasmine::Configuration.new
-      runner = config.runner.call('formatter', 'url')
-      expect(runner).to be_a(Jasmine::Runners::ChromeHeadless)
+    context "when not explicitly set" do
+      it "should default to a proc that returns a ChromeHeadless runner instance" do
+        runner = subject.call('formatter', 'url')
+        expect(runner).to be_a(Jasmine::Runners::ChromeHeadless)
+      end
     end
   end
 end

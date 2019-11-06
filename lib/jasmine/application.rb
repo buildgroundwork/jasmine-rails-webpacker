@@ -12,28 +12,14 @@ module Jasmine
         builder.use(Rack::Head)
         builder.use(Rack::Jasmine::CacheControl)
 
-        use_additional_rack_apps(builder, config)
+        config.use_additional_rack_apps(builder)
 
         builder.use(Rack::Static, urls: ['/packs'], root: Rails.application.paths['public'].first)
         builder.map('/') { run Rack::Jasmine::Runner.new(Jasmine::Page.new) }
 
-        map_additional_rack_paths(builder, config)
+        config.map_additional_rack_paths(builder)
 
         builder
-      end
-
-      private
-
-      def use_additional_rack_apps(builder, config)
-        config.rack_apps.each do |app_config|
-          builder.use(app_config[:app], *app_config[:args], &app_config[:block])
-        end
-      end
-
-      def map_additional_rack_paths(builder, config)
-        config.rack_path_map.each do |path, handler|
-          builder.map(path) { run handler.call }
-        end
       end
     end
   end
