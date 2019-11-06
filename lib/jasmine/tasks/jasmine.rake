@@ -15,6 +15,12 @@ with either 'jasmine init' or 'rails g jasmine:install'.
 end
 
 namespace :jasmine do
+  task :set_test_env do
+    Rails.env = ENV['RAILS_ENV'] = ENV['NODE_ENV'] = 'test'
+    # Force Webpacker to reload the instance in test mode.
+    Webpacker.instance = nil
+  end
+
   task :configure do
     require 'jasmine/config'
 
@@ -26,7 +32,7 @@ namespace :jasmine do
     end
   end
 
-  task :require do
+  task require: [:environment, :set_test_env] do
     require 'jasmine'
   end
 
