@@ -144,6 +144,10 @@ Style/FrozenStringLiteralComment:
   Exclude:
     - '**/*.jbuilder'
 
+# Prefer stabby lambdas.  Because they're stabby.
+Style/Lambda:
+  EnforcedStyle: literal
+
 # json.(... is idiomatic for JBuilder
 Style/LambdaCall:
   Exclude:
