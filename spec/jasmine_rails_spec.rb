@@ -24,13 +24,13 @@ describe 'A Rails app' do
   def install_jasmine
     `bundle exec rails g jasmine:install`
     expect($?).to be_success
-    expect(File.exists?('spec/javascript/helpers/.gitkeep')).to be_truthy
-    expect(File.exists?('spec/javascript/support/jasmine_helper.rb')).to be_truthy
+    expect(File.exist?('spec/javascript/helpers/.gitkeep')).to be_truthy
+    expect(File.exist?('spec/javascript/support/jasmine_helper.rb')).to be_truthy
     `bundle exec rails g jasmine:examples`
-    expect(File.exists?('app/javascript/jasmine_examples/Player.js')).to be_truthy
-    expect(File.exists?('app/javascript/jasmine_examples/Song.js')).to be_truthy
-    expect(File.exists?('spec/javascript/jasmine_examples/PlayerSpec.js')).to be_truthy
-    expect(File.exists?('spec/javascript/helpers/jasmine_examples/SpecHelper.js')).to be_truthy
+    expect(File.exist?('app/javascript/jasmine_examples/Player.js')).to be_truthy
+    expect(File.exist?('app/javascript/jasmine_examples/Song.js')).to be_truthy
+    expect(File.exist?('spec/javascript/jasmine_examples/PlayerSpec.js')).to be_truthy
+    expect(File.exist?('spec/javascript/helpers/jasmine_examples/SpecHelper.js')).to be_truthy
   end
 
   before :all do

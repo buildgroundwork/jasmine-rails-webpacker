@@ -4,7 +4,7 @@ module Jasmine
   class << self
     def configure!
       config_file = Rails.root.join('spec', 'javascript', 'support', 'jasmine_helper.rb')
-      require config_file if File.exists?(config_file)
+      require config_file if File.exist?(config_file)
     end
 
     def configure(&block)
