@@ -1,0 +1,258 @@
+inherit_from:
+  - .rubocop_todo.yml
+  - .rubocop_enabled.yml
+  - .rubocop_disabled.yml
+
+require:
+  - rubocop-rails
+
+
+  # - .rubocop_todo.yml
+
+AllCops:
+  Include:
+    - '**/*.rb'
+    - '**/*.jbuilder'
+    - '**/*.rake'
+    - '**/config.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'
+  Exclude:
+    - 'bin/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+  DisplayCopNames: true
+  TargetRubyVersion: 2.6
+  TargetRailsVersion: 6.0
+
+#===============
+# Layout
+#===============
+Layout/AlignHash:
+  EnforcedLastArgumentHashStyle: ignore_implicit
+
+# Prefer this:
+#
+# Foo.new(wibble: [
+#   something,
+#   something_else
+# ])
+#
+# to this:
+#
+# Foo.new(wibble: [
+#                   something,
+#                   something_else
+#                 ])
+Layout/IndentFirstArrayElement:
+  EnforcedStyle: consistent
+
+# Prefer this:
+#
+# Foo.new(wibble: {
+#   a: something,
+#   b: something_else
+# })
+#
+# to this:
+#
+# Foo.new(wibble: {
+#                   a: something,
+#                   b: something_else
+#                 })
+Layout/IndentFirstHashElement:
+  EnforcedStyle: consistent
+
+Layout/MultilineAssignmentLayout:
+  SupportedTypes:
+    - case
+    - class
+    - if
+    - kwbegin
+    - module
+
+# This is the default VIM indentation.
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# This is the default VIM indentation.
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+# No need to provide for ASCII art in assignments (the default is to allow
+# #= and #=> to have multiple spaces).
+Layout/SpaceAroundOperators:
+  AllowForAlignment: false
+
+Layout/TrailingBlankLines:
+  EnforcedStyle: final_blank_line
+
+#===============
+# Naming
+#===============
+Naming/FileName:
+  Exclude:
+    - 'gems/**/*'
+
+#===============
+# Style
+#===============
+# JSON matchers involve a lot of chaining, which looks much better with {...}
+# as oppposed to do/end.
+Style/BlockDelimiters:
+  Exclude:
+    - spec/views/**/*
+
+# Better to be explicit with multiple hashes lying around.
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+# Compactness is next to godliness.
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/CollectionMethods:
+  # ...ect
+  PreferredMethods:
+    map: 'collect'
+    map!: 'collect!'
+    reduce: 'inject'
+    reduce!: 'inject!'
+    find: 'detect'
+    keep_if: 'select!'
+    delete_if: 'reject!'
+
+# Use backticks on single-line commands, and %x on multi-line commands.
+Style/CommandLiteral:
+  EnforcedStyle: mixed
+  AllowInnerBackticks: false
+
+# Let's be honest, if you're putting 'HACK' comments into your code then you
+# need more than static style analysis.
+Style/CommentAnnotation:
+  Keywords:
+    - TODO
+
+# Sometimes we have to coerce types to actual boolean types in JBuilder views,
+# in order to get the right JSON type.
+Style/DoubleNegation:
+  Exclude:
+    - '**/*.jbuilder'
+
+# This cop crashes on JBuilder templates.
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - '**/*.jbuilder'
+
+# json.(... is idiomatic for JBuilder
+Style/LambdaCall:
+  Exclude:
+    - '**/**.json.jbuilder'
+
+# Don't require else clauses for if statements; sometimes a nil return value is
+# just what the doctor ordered.
+Style/MissingElse:
+  EnforcedStyle: case
+
+# JSON matchers involve a lot of chaining
+Style/MultilineBlockChain:
+  Exclude:
+    - spec/views/**/*
+
+# No explicit nil checks.
+Style/NonNilCheck:
+  IncludeSemanticChanges: true
+
+# We don't pass backtraces, so this should be fine.
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
+# Use slashes on single-line regexes, and %r on multi-line regexes.
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+  AllowInnerSlashes: false
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
+
+# e.g. subject { render; rendered }
+Style/Semicolon:
+  Exclude:
+    - spec/**/*
+
+Style/StringLiterals:
+  Exclude:
+    # auto-generated
+    - bin/**/*
+    # Rspec snippets are everywhere.
+    - spec/**/*
+
+# Ignore auto-generated files, and the like.
+Style/SymbolArray:
+  Exclude:
+    - Gemfile
+    - lib/tasks/*.rake
+
+Style/TrivialAccessors:
+  # Allows trivial writers that don't end in an equal sign. e.g.
+  #
+  # def on_exception(action)
+  #   @on_exception=action
+  # end
+  # on_exception :restart
+  #
+  # Commonly used in DSLs
+  AllowDSLWriters: true
+  # Allow methods like this:
+  #
+  # def foo?
+  #   @foo
+  # end
+  AllowPredicates: true
+
+#===============
+# Lint
+#===============
+Lint/HandleExceptions:
+  Exclude:
+    - spec/**/*
+
+Lint/Void:
+  Exclude:
+    - spec/**/*
+
+#===============
+# Metrics
+#===============
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*
+
+Metrics/BlockLength:
+  Exclude:
+    - app/views/**/*
+    - config/**/*
+    - spec/**/*
+
+Metrics/ClassLength:
+  Exclude:
+    - db/migrate/*
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/*
+
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
+#===============
+# Rails
+#===============
+Rails/DynamicFindBy:
+  Whitelist:
+    # This is a Rails finder method
+    - find_by_sql
+
+    # We add this for proper finding in controllers
+    - find_by_param!
+
