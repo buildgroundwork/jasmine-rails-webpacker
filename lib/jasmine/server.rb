@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jasmine
   class Server
     def initialize(port = 8888, application = nil, rack_options = nil, env = ENV)

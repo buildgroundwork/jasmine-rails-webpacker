@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Jasmine::Formatters::Console do
 
-  let(:outputter_output) { '' }
+  let(:outputter_output) { String.new }
   let(:outputter) do
     double(:outputter).tap do |o|
       allow(o).to receive(:print) { |str| outputter_output << str }
