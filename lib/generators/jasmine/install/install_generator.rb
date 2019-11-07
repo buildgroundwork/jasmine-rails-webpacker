@@ -8,7 +8,7 @@ module Jasmine
       end
 
       def install_jasmine_core
-        run "yarn add --dev jasmine-core"
+        run 'yarn add --dev jasmine-core'
       end
 
       def copy_jasmine_files

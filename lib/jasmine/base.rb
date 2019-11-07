@@ -4,7 +4,7 @@ require 'erb'
 module Jasmine
   # this seemingly-over-complex method is necessary to get an open port on at least some of our Macs
   def self.open_socket_on_unused_port
-    infos = Socket::getaddrinfo("localhost", nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
+    infos = Socket::getaddrinfo('localhost', nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
     families = Hash[*infos.collect { |af, *_| af }.uniq.zip([]).flatten]
 
     return TCPServer.open('0.0.0.0', 0) if families.has_key?('AF_INET')
@@ -30,7 +30,7 @@ module Jasmine
     true
   end
 
-  def self.wait_for_listener(port, hostname = "localhost", seconds_to_wait = 20)
+  def self.wait_for_listener(port, hostname = 'localhost', seconds_to_wait = 20)
     time_out_at = Time.now + seconds_to_wait
     until server_is_listening_on(hostname, port)
       sleep 0.1
@@ -40,11 +40,11 @@ module Jasmine
   end
 
   def self.runner_filepath
-    File.expand_path(File.join(File.dirname(__FILE__), "run_specs.rb"))
+    File.expand_path(File.join(File.dirname(__FILE__), 'run_specs.rb'))
   end
 
   def self.runner_template
-    File.read(File.join(File.dirname(__FILE__), "run.html.erb"))
+    File.read(File.join(File.dirname(__FILE__), 'run.html.erb'))
   end
 
   def self.root(*paths)

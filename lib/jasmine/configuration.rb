@@ -100,7 +100,7 @@ module Jasmine
 
     def default_chrome_options
       {
-        cli: { "no-sandbox" => nil, "headless" => nil, "remote-debugging-port" => 9222 },
+        cli: { 'no-sandbox' => nil, 'headless' => nil, 'remote-debugging-port' => 9222 },
         startup_timeout: 3,
         binary: nil
       }

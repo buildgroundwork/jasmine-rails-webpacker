@@ -3,7 +3,7 @@ require 'rails/railtie'
 module Jasmine
   class Railtie < Rails::Railtie
 
-    initializer "jasmine.initializer", :before => :load_environment_hook do
+    initializer 'jasmine.initializer', :before => :load_environment_hook do
       old_jasmine_rakefile = ::Rails.root.join('lib', 'tasks', 'jasmine.rake')
       if old_jasmine_rakefile.exist? && !ENV['USE_JASMINE_RAKE']
         puts <<~MSG

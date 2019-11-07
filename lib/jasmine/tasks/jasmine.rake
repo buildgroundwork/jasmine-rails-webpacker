@@ -19,7 +19,7 @@ namespace :jasmine do
     begin
       require 'json'
     rescue LoadError
-      puts "You must have a JSON library installed to run jasmine:ci. Try \"gem install json\""
+      puts 'You must have a JSON library installed to run jasmine:ci. Try "gem install json"'
       exit
     end
   end

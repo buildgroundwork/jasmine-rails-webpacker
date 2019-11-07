@@ -8,7 +8,7 @@ module Rack
 
       def call(env)
         run_adapter = Rack::Jasmine::RunAdapter.new(@runner_config)
-        run_adapter.run(env["PATH_INFO"])
+        run_adapter.run(env['PATH_INFO'])
       end
     end
 

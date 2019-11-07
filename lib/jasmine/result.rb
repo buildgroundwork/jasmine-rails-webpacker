@@ -6,14 +6,14 @@ module Jasmine
     end
 
     def initialize(attrs)
-      @show_full_stack_trace = attrs["show_full_stack_trace"]
-      @status = attrs["status"]
-      @full_name = attrs["fullName"]
-      @description = attrs["description"]
-      @failed_expectations = map_failures(attrs.fetch("failedExpectations", []))
-      @deprecation_warnings = map_failures(attrs.fetch("deprecationWarnings", []))
+      @show_full_stack_trace = attrs['show_full_stack_trace']
+      @status = attrs['status']
+      @full_name = attrs['fullName']
+      @description = attrs['description']
+      @failed_expectations = map_failures(attrs.fetch('failedExpectations', []))
+      @deprecation_warnings = map_failures(attrs.fetch('deprecationWarnings', []))
       @suite_name = full_name.slice(0, full_name.size - description.size - 1)
-      @pending_reason = attrs["pendingReason"]
+      @pending_reason = attrs['pendingReason']
     end
 
     def succeeded?
@@ -39,17 +39,17 @@ module Jasmine
 
     def map_failures(failures)
       failures.map do |e|
-        if e["stack"]
+        if e['stack']
           if show_full_stack_trace
-            stack = e["stack"]
+            stack = e['stack']
           else
-            stack = e["stack"].split("\n").slice(0, 7).join("\n")
+            stack = e['stack'].split("\n").slice(0, 7).join("\n")
           end
         else
-          stack = "No stack trace present."
+          stack = 'No stack trace present.'
         end
 
-        Failure.new(e["message"], stack, e["globalErrorType"])
+        Failure.new(e['message'], stack, e['globalErrorType'])
       end
     end
 
