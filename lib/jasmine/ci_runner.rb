@@ -7,14 +7,14 @@ module Jasmine
       thread: Thread,
       application_factory: Jasmine::Application,
       server_factory: Jasmine::Server,
-      outputter: Kernel,
+      outfile: $stdout,
       **url_options
     )
       @config = config
       @thread_class = thread
       @application_factory = application_factory
       @server_factory = server_factory
-      @outputter = outputter
+      @outfile = outfile
 
       build_url(**url_options)
     end
@@ -37,7 +37,7 @@ module Jasmine
       thread.abort_on_exception = true
 
       Jasmine.wait_for_listener(config.port(:ci), config.host.sub(%r(\Ahttps?://), ''))
-      @outputter.puts 'jasmine server started'
+      @outfile.puts 'jasmine server started'
     end
 
     def build_url(options)

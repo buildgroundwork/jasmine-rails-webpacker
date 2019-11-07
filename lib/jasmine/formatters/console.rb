@@ -3,61 +3,61 @@
 module Jasmine
   module Formatters
     class Console
-      def initialize(outputter = Kernel)
+      def initialize(outfile: $stdout)
         @results = []
-        @outputter = outputter
+        @outfile = outfile
       end
 
       def format(results_batch)
-        outputter.print(chars(results_batch))
+        outfile.print(chars(results_batch))
         @results += results_batch
       end
 
       def done(run_details)
-        outputter.puts
+        outfile.puts
 
         run_result = global_failure_details(run_details)
 
         failure_count = results.count(&:failed?)
         if failure_count.nonzero?
-          outputter.puts('Failures:')
-          outputter.puts(failures(@results))
-          outputter.puts
+          outfile.puts('Failures:')
+          outfile.puts(failures(@results))
+          outfile.puts
         end
 
         pending_count = results.count(&:pending?)
         if pending_count.nonzero?
-          outputter.puts('Pending:')
-          outputter.puts(pending(@results))
-          outputter.puts
+          outfile.puts('Pending:')
+          outfile.puts(pending(@results))
+          outfile.puts
         end
 
         deprecation_warnings = (@results + [run_result]).collect(&:deprecation_warnings).flatten
         if deprecation_warnings.any?
-          outputter.puts('Deprecations:')
-          outputter.puts(deprecations(deprecation_warnings))
-          outputter.puts
+          outfile.puts('Deprecations:')
+          outfile.puts(deprecations(deprecation_warnings))
+          outfile.puts
         end
 
         summary = "#{pluralize(results.size, 'spec')}, #{pluralize(failure_count, 'failure')}"
         summary += ", #{pluralize(pending_count, 'pending spec')}" if pending_count.nonzero?
-        outputter.puts(summary)
+        outfile.puts(summary)
 
         # rubocop:disable Style/IfUnlessModifier
         if run_details['overallStatus'] == 'incomplete'
-          outputter.puts("Incomplete: #{run_details['incompleteReason']}")
+          outfile.puts("Incomplete: #{run_details['incompleteReason']}")
         end
         # rubocop:enable Style/IfUnlessModifier
 
         if run_details['order'] && run_details['order']['random']
           seed = run_details['order']['seed']
-          outputter.puts("Randomized with seed #{seed} \(rake jasmine:ci\[true,#{seed}])")
+          outfile.puts("Randomized with seed #{seed} \(rake jasmine:ci\[true,#{seed}])")
         end
       end
 
       private
 
-      attr_reader :results, :outputter
+      attr_reader :results, :outfile
 
       def failures(results)
         results.select(&:failed?).collect { |f| failure_message(f) }.join("\n\n")
@@ -85,8 +85,8 @@ module Jasmine
       def report_global_failures(prefix, fails)
         if fails.any?
           fail_result = Jasmine::Result.new('fullName' => prefix, 'description' => '', 'failedExpectations' => fails)
-          outputter.puts(failure_message(fail_result))
-          outputter.puts
+          outfile.puts(failure_message(fail_result))
+          outfile.puts
         end
       end
 
