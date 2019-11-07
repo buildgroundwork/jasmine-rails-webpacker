@@ -137,3 +137,4 @@ describe Jasmine::CiRunner do
     expect(runner_factory).to have_received(:call).with(instance_of(Jasmine::Formatters::Multi), /\bseed=4231\b/)
   end
 end
+

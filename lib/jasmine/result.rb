@@ -58,3 +58,4 @@ module Jasmine
     class Failure < Struct.new(:message, :stack, :globalErrorType); end
   end
 end
+

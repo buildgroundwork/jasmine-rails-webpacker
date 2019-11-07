@@ -54,3 +54,4 @@ module Jasmine
   end
 
 end
+

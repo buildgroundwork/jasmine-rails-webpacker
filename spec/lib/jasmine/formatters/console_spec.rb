@@ -250,3 +250,4 @@ describe Jasmine::Formatters::Console do
     Jasmine::Result.new(disabled_raw_result)
   end
 end
+

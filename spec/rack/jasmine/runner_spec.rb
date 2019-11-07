@@ -25,3 +25,4 @@ describe Rack::Jasmine::Runner do
     end
   end
 end
+

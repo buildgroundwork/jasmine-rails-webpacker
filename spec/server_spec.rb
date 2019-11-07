@@ -22,3 +22,4 @@ describe Jasmine::Server do
     expect(@fake_env['PORT']).to eq('1234')
   end
 end
+

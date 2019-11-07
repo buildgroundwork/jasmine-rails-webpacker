@@ -27,3 +27,4 @@ describe Jasmine::Formatters::Multi do
     multi.done(run_details)
   end
 end
+

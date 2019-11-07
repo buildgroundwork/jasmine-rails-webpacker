@@ -19,3 +19,4 @@ describe Jasmine::Formatters::ExitCode do
     expect(formatter).not_to be_succeeded
   end
 end
+
