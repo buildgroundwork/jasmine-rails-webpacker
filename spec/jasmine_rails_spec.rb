@@ -44,10 +44,10 @@ describe 'A Rails app' do
     FileUtils.mkdir_p(File.join(Dir.pwd, 'tmp', 'pids'))
 
     # Add jasmine to the Gemfile, and update the puma version.
-    open('Gemfile', 'a') { |f|
+    open('Gemfile', 'a') do |f|
       f.puts "gem 'jasmine', :path => '#{File.absolute_path(File.join(__FILE__, '../..'))}'"
       f.flush
-    }
+    end
 
     Bundler.with_clean_env do
       bundle_install
