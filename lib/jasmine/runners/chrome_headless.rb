@@ -41,7 +41,7 @@ module Jasmine
               result_received = true
               run_details = JSON.parse(params['args'][1]['value'], max_nesting: false)
             elsif config.show_console_log
-              puts params['args'].collect { |e| e['value'] }.join(' ')
+              $stdout.puts params['args'].collect { |e| e['value'] }.join(' ')
             end
           end
         end

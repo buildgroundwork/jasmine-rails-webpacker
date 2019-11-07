@@ -40,7 +40,7 @@ module Jasmine
     time_out_at = Time.now.to_i + seconds_to_wait
     until server_is_listening_on(hostname, port)
       sleep 0.1
-      puts "Waiting for server on #{hostname}:#{port}..."
+      $stdout.puts "Waiting for server on #{hostname}:#{port}..."
       raise "jasmine server didn't show up on port #{hostname}:#{port} after #{seconds_to_wait} seconds." if Time.now.to_i >= time_out_at
     end
   end
