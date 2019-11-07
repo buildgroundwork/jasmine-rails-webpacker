@@ -13,7 +13,7 @@ module Rack
 
         [
           200,
-          { 'Content-Type' => 'text/html'},
+          { 'Content-Type' => 'text/html' },
           [@page.render]
         ]
       end
@@ -21,7 +21,7 @@ module Rack
       def not_found
         [
           404,
-          {'Content-Type' => 'text/plain', 'X-Cascade' => 'pass'},
+          { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' },
           ["File not found: #{@path}\n"]
         ]
       end

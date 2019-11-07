@@ -7,16 +7,17 @@ describe Jasmine::CiRunner do
   let(:runner_factory) { double(:runner_factory, :call => runner) }
 
   let(:config) do
-    double(:configuration,
-           :runner => runner_factory,
-           :formatters => [],
-           :host => 'http://foo.bar.com',
-           :port => '1234',
-           :rack_options => 'rack options',
-           :stop_spec_on_expectation_failure => false,
-           :stop_on_spec_failure => false,
-           :random => false
-          )
+    double(
+      :configuration,
+      :runner => runner_factory,
+      :formatters => [],
+      :host => 'http://foo.bar.com',
+      :port => '1234',
+      :rack_options => 'rack options',
+      :stop_spec_on_expectation_failure => false,
+      :stop_on_spec_failure => false,
+      :random => false
+    )
   end
 
   let(:thread_instance) { double(:thread, :abort_on_exception= => nil) }

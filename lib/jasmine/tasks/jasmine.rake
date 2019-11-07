@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if Rake.application.tasks.any? {|t| t.name == 'jasmine/ci' }
+if Rake.application.tasks.any? { |t| t.name == 'jasmine/ci' }
   message = <<~EOF
 
                                 WARNING

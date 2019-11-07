@@ -160,7 +160,7 @@ describe Jasmine::Formatters::Console do
         results = [passing_result]
         console = Jasmine::Formatters::Console.new(outputter)
         console.format(results)
-        console.done({ 'order' => { 'random' => true, 'seed' => '4325' } })
+        console.done('order' => { 'random' => true, 'seed' => '4325' })
 
         expect(outputter_output).to match(/Randomized with seed 4325 \(rake jasmine:ci\[true,4325\]\)/)
       end
@@ -169,7 +169,7 @@ describe Jasmine::Formatters::Console do
     describe 'with loading errors' do
       it 'should show the errors' do
         console = Jasmine::Formatters::Console.new(outputter)
-        console.done({ 'failedExpectations' => [
+        console.done('failedExpectations' => [
           {
             'globalErrorType' => 'load',
             'message' => 'Load Error',
@@ -180,7 +180,7 @@ describe Jasmine::Formatters::Console do
             'message' => 'Another Load Error',
             'stack' => 'even more info'
           },
-        ] })
+        ])
 
         expect(outputter_output).to match(/Error during loading/)
         expect(outputter_output).to match(/\e\[31mLoad Error\e\[0m\n\s*Stack:\n\s*more info/)
@@ -191,7 +191,7 @@ describe Jasmine::Formatters::Console do
     describe 'with errors in a global afterAll' do
       it 'should show the errors' do
         console = Jasmine::Formatters::Console.new(outputter)
-        console.done({ 'failedExpectations' => [
+        console.done('failedExpectations' => [
           {
             'globalErrorType' => 'afterAll',
             'message' => 'Global Failure',
@@ -202,7 +202,7 @@ describe Jasmine::Formatters::Console do
             'message' => 'Another Failure',
             'stack' => 'even more info'
           },
-        ] })
+        ])
 
         expect(outputter_output).to match(/Error occurred in afterAll/)
         expect(outputter_output).to match(/\e\[31mGlobal Failure\e\[0m\n\s*Stack:\n\s*more info/)
@@ -213,10 +213,10 @@ describe Jasmine::Formatters::Console do
     describe 'when the overall status is incomplete' do
       it 'shows the reason' do
         console = Jasmine::Formatters::Console.new(outputter)
-        console.done({
+        console.done(
           'overallStatus' => 'incomplete',
           'incompleteReason' => 'not all bars were frobnicated'
-        })
+        )
 
         expect(outputter_output).to match(/Incomplete: not all bars were frobnicated/)
       end
@@ -225,7 +225,7 @@ describe Jasmine::Formatters::Console do
     it 'shows deprecation warnings' do
       console = Jasmine::Formatters::Console.new(outputter)
       console.format([Jasmine::Result.new(deprecation_raw_result)])
-      console.done({ 'deprecationWarnings' => [{ 'message' => 'globally deprecated', 'stack' => nil }] })
+      console.done('deprecationWarnings' => [{ 'message' => 'globally deprecated', 'stack' => nil }])
 
       expect(outputter_output).to match(/deprecated call/)
       expect(outputter_output).to match(/globally deprecated/)

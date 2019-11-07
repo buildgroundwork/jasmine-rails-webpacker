@@ -75,7 +75,7 @@ module Jasmine
       def global_failure_details(run_details)
         result = Jasmine::Result.new(run_details.merge('fullName' => 'Error occurred in afterAll', 'description' => ''))
         if (result.failed_expectations.size > 0)
-          (loadFails, afterAllFails) = result.failed_expectations.partition {|e| e.globalErrorType == 'load' }
+          (loadFails, afterAllFails) = result.failed_expectations.partition { |e| e.globalErrorType == 'load' }
           report_global_failures('Error during loading', loadFails)
           report_global_failures('Error occurred in afterAll', afterAllFails)
         end

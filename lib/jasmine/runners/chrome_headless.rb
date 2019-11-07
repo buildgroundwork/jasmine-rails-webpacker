@@ -48,7 +48,7 @@ module Jasmine
           end
         end
 
-        chrome.listen_until {|msg| result_recived }
+        chrome.listen_until { |msg| result_recived }
         formatter.done(run_details)
         chrome.send_cmd 'Browser.close'
         Process.kill('INT', chrome_server.pid)
