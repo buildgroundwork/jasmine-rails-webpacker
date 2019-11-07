@@ -88,18 +88,18 @@ module Jasmine
         time = Time.now
         while Time.now - time < config.chrome_options[:startup_timeout]
           begin
-            conn = TCPSocket.new('localhost', 9222);
-          rescue SocketError;
+            conn = TCPSocket.new('localhost', 9222)
+          rescue SocketError
             sleep 0.1
             next
-          rescue Errno::ECONNREFUSED;
+          rescue Errno::ECONNREFUSED
             sleep 0.1
             next
-          rescue Errno::EADDRNOTAVAIL;
+          rescue Errno::EADDRNOTAVAIL
             sleep 0.1
             next
           else
-            conn.close;
+            conn.close
             return
           end
         end
