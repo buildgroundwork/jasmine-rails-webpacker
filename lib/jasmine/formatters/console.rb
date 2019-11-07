@@ -57,6 +57,7 @@ module Jasmine
       end
 
       private
+
       attr_reader :results, :outputter
 
       def failures(results)

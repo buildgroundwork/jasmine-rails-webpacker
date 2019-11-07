@@ -37,6 +37,7 @@ module Jasmine
     attr_reader :full_name, :description, :failed_expectations, :deprecation_warnings, :suite_name, :pending_reason
 
     private
+
     attr_reader :status, :show_full_stack_trace
 
     def map_failures(failures)
