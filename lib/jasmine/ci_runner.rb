@@ -1,36 +1,17 @@
 module Jasmine
   class CiRunner
-    def initialize(config, options={})
+    def initialize(config, options = {})
       @config = config
-      @thread = options.fetch(:thread, Thread)
+      @thread_class = options.fetch(:thread, Thread)
       @application_factory = options.fetch(:application_factory, Jasmine::Application)
       @server_factory = options.fetch(:server_factory, Jasmine::Server)
       @outputter = options.fetch(:outputter, Kernel)
-      @random = options.fetch(:random, config.random)
-      @seed = options.has_key?(:seed) ? "&seed=#{options[:seed]}" : ''
+
+      build_url(options)
     end
 
     def run
-      formatters = config.formatters.map { |formatter_class| formatter_class.new }
-
-      exit_code_formatter = Jasmine::Formatters::ExitCode.new
-      formatters << exit_code_formatter
-
-      url = "#{config.host}:#{config.port(:ci)}/?throwFailures=#{config.stop_spec_on_expectation_failure}&failFast=#{config.stop_on_spec_failure}&random=#{@random}#{@seed}"
-      runner = config.runner.call(Jasmine::Formatters::Multi.new(formatters), url)
-
-      # TODO: Inject runner's boot.js here
-
-      server = @server_factory.new(config.port(:ci), app, config.rack_options)
-
-      t = @thread.new do
-        server.start
-      end
-      t.abort_on_exception = true
-
-      Jasmine::wait_for_listener(config.port(:ci), config.host.sub(/\Ahttps?:\/\//, ''))
-      @outputter.puts 'jasmine server started'
-
+      start_server
       runner.run
 
       exit_code_formatter.succeeded?
@@ -38,10 +19,39 @@ module Jasmine
 
     private
 
-    attr_reader :config
+    attr_reader :config, :url
+
+    def start_server
+      server = @server_factory.new(config.port(:ci), app, config.rack_options)
+
+      thread = @thread_class.new { server.start }
+      thread.abort_on_exception = true
+
+      Jasmine::wait_for_listener(config.port(:ci), config.host.sub(/\Ahttps?:\/\//, ''))
+      @outputter.puts 'jasmine server started'
+    end
+
+    def build_url(options)
+      random = options.fetch(:random, config.random)
+      seed = options.has_key?(:seed) ? "&seed=#{options[:seed]}" : ''
+      @url = "#{config.host}:#{config.port(:ci)}/?throwFailures=#{config.stop_spec_on_expectation_failure}&failFast=#{config.stop_on_spec_failure}&random=#{random}#{seed}"
+    end
+
+    def runner
+      @runner ||= config.runner.call(Jasmine::Formatters::Multi.new(formatters), url)
+    end
+
+    def formatters
+      @formatters ||= config.formatters.collect(&:new) << exit_code_formatter
+    end
+
+    def exit_code_formatter
+      @exit_code_formatter ||= Jasmine::Formatters::ExitCode.new
+    end
 
     def app
-      @application_factory.app(@config)
+      @application_factory.app(config, extra_js: runner.boot_js)
     end
   end
 end
+

@@ -18,7 +18,7 @@ describe 'Jasmine::Application' do
   end
 
   describe ".app" do
-    subject { -> { Jasmine::Application.app(config, builder) } }
+    subject { -> { Jasmine::Application.app(config, builder: builder) } }
 
     it "should return the builder" do
       expect(subject.call).to eq(builder)

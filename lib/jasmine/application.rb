@@ -8,18 +8,26 @@ require 'ostruct'
 module Jasmine
   class Application
     class << self
-      def app(config, builder = Rack::Builder.new)
+      def app(config, builder: Rack::Builder.new, extra_js: nil)
         builder.use(Rack::Head)
         builder.use(Rack::Jasmine::CacheControl)
 
         config.use_additional_rack_apps(builder)
 
         builder.use(Rack::Static, urls: ['/packs'], root: Rails.application.paths['public'].first)
-        builder.map('/') { run Rack::Jasmine::Runner.new(Jasmine::Page.new) }
+        map_root(builder, extra_js: extra_js)
 
         config.map_additional_rack_paths(builder)
 
         builder
+      end
+
+      private
+
+      def map_root(builder, extra_js: )
+        page = Jasmine::Page.new(extra_js: extra_js)
+        request_handler = Rack::Jasmine::Runner.new(page)
+        builder.map('/') { run request_handler }
       end
     end
   end

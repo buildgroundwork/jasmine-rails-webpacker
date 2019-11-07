@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Jasmine::CiRunner do
-  let(:runner) { double(:runner, :run => nil) }
+  let(:runner) { double(:runner, :run => nil, boot_js: nil) }
   let(:runner_factory) { double(:runner_factory, :call => runner) }
 
   let(:config) do
@@ -47,7 +47,7 @@ describe Jasmine::CiRunner do
     expect(runner_factory).to have_received(:call).with(instance_of(Jasmine::Formatters::Multi), /\bfailFast=false\b/)
     expect(runner_factory).to have_received(:call).with(instance_of(Jasmine::Formatters::Multi), /\brandom=false\b/)
 
-    expect(application_factory).to have_received(:app).with(config)
+    expect(application_factory).to have_received(:app) { |*args| args.first == config }
     expect(server_factory).to have_received(:new).with('1234', 'my fake app', 'rack options')
 
     expect(fake_thread).to have_received(:new)

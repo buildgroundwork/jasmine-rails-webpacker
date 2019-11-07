@@ -13,6 +13,7 @@
 <body data-no-turbolink data-turbolinks="false">
   <div id="jasmine_content"></div>
   <%= javascript_pack_tag 'jasmine' %>
+  <%= javascript_tag(extra_js) if extra_js %>
   <%= javascript_pack_tag 'specs' %>
 </body>
 </html>
