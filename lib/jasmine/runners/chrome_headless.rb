@@ -85,8 +85,8 @@ module Jasmine
       end
 
       def wait_for_chrome_to_start_debug_socket
-        time = Time.now
-        while Time.now - time < config.chrome_options[:startup_timeout]
+        time = Time.now.to_i
+        while Time.now.to_i - time < config.chrome_options[:startup_timeout]
           begin
             conn = TCPSocket.new('localhost', 9222)
           rescue SocketError
