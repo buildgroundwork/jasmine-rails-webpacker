@@ -21,5 +21,5 @@ RSpec::Core::RakeTask.new(:performance_specs) do |t|
   t.rspec_opts = '-t performance'
 end
 
-task :default => :spec
+task default: :spec
 

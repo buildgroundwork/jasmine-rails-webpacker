@@ -6,7 +6,7 @@ require 'rack/jasmine/runner'
 describe Rack::Jasmine::Runner do
   describe "#call" do
     let(:content) { "some content" }
-    let(:page) { double(Jasmine::Page, :render => content) }
+    let(:page) { double(Jasmine::Page, render: content) }
     let(:runner) { Rack::Jasmine::Runner.new(page) }
     subject { runner.call("PATH_INFO" => path) }
     context "PATH_INFO is /" do

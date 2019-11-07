@@ -48,7 +48,7 @@ namespace :jasmine do
     exit(1) unless ci_runner.run
   end
 
-  task :server => %w(jasmine:configure jasmine:configure_plugins) do
+  task server: %w(jasmine:configure jasmine:configure_plugins) do
     config = Jasmine.config
     port = config.port(:server)
     server = Jasmine::Server.new(port, Jasmine::Application.app(Jasmine.config), config.rack_options)
@@ -59,5 +59,5 @@ namespace :jasmine do
 end
 
 desc 'Start server to host jasmine specs'
-task :jasmine => %w(jasmine:server)
+task jasmine: %w(jasmine:server)
 

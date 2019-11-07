@@ -3,20 +3,20 @@
 require 'spec_helper'
 
 describe Jasmine::CiRunner do
-  let(:runner) { double(:runner, :run => nil, boot_js: nil) }
-  let(:runner_factory) { double(:runner_factory, :call => runner) }
+  let(:runner) { double(:runner, run: nil, boot_js: nil) }
+  let(:runner_factory) { double(:runner_factory, call: runner) }
 
   let(:config) do
     double(
       :configuration,
-      :runner => runner_factory,
-      :formatters => [],
-      :host => 'http://foo.bar.com',
-      :port => '1234',
-      :rack_options => 'rack options',
-      :stop_spec_on_expectation_failure => false,
-      :stop_on_spec_failure => false,
-      :random => false
+      runner: runner_factory,
+      formatters: [],
+      host: 'http://foo.bar.com',
+      port: '1234',
+      rack_options: 'rack options',
+      stop_spec_on_expectation_failure: false,
+      stop_on_spec_failure: false,
+      random: false
     )
   end
 
@@ -29,10 +29,10 @@ describe Jasmine::CiRunner do
     end
     thread
   end
-  let(:application_factory) { double(:application, :app => 'my fake app') }
-  let(:fake_server) { double(:server, :start => nil) }
-  let(:server_factory) { double(:server_factory, :new => fake_server) }
-  let(:outputter) { double(:outputter, :puts => nil) }
+  let(:application_factory) { double(:application, app: 'my fake app') }
+  let(:fake_server) { double(:server, start: nil) }
+  let(:server_factory) { double(:server_factory, new: fake_server) }
+  let(:outputter) { double(:outputter, puts: nil) }
 
   before do
     allow(Jasmine).to receive(:wait_for_listener)
@@ -65,7 +65,7 @@ describe Jasmine::CiRunner do
   end
 
   it 'returns true for a successful run' do
-    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, :succeeded? => true) }
+    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, succeeded?: true) }
 
     ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
 
@@ -73,7 +73,7 @@ describe Jasmine::CiRunner do
   end
 
   it 'returns false for a failed run' do
-    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, :succeeded? => false) }
+    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, succeeded?: false) }
 
     ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
 
