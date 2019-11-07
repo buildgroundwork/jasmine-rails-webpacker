@@ -19,9 +19,11 @@ module Rack
       end
 
       def not_found
-        [404, {'Content-Type' => 'text/plain',
-               'X-Cascade' => 'pass'},
-               ["File not found: #{@path}\n"]]
+        [
+          404,
+          {'Content-Type' => 'text/plain', 'X-Cascade' => 'pass'},
+          ["File not found: #{@path}\n"]
+        ]
       end
     end
   end
