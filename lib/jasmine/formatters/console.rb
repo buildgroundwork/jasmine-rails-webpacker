@@ -32,10 +32,10 @@ module Jasmine
           outputter.puts
         end
 
-        deprecationWarnings = (@results + [run_result]).map(&:deprecation_warnings).flatten
-        if deprecationWarnings.size > 0
+        deprecation_warnings = (@results + [run_result]).map(&:deprecation_warnings).flatten
+        if deprecation_warnings.size > 0
           outputter.puts('Deprecations:')
-          outputter.puts(deprecations(deprecationWarnings))
+          outputter.puts(deprecations(deprecation_warnings))
           outputter.puts
         end
 
@@ -75,9 +75,9 @@ module Jasmine
       def global_failure_details(run_details)
         result = Jasmine::Result.new(run_details.merge('fullName' => 'Error occurred in afterAll', 'description' => ''))
         if (result.failed_expectations.size > 0)
-          (loadFails, afterAllFails) = result.failed_expectations.partition { |e| e.globalErrorType == 'load' }
-          report_global_failures('Error during loading', loadFails)
-          report_global_failures('Error occurred in afterAll', afterAllFails)
+          (load_fails, after_all_fails) = result.failed_expectations.partition { |e| e.globalErrorType == 'load' }
+          report_global_failures('Error during loading', load_fails)
+          report_global_failures('Error occurred in afterAll', after_all_fails)
         end
 
         result
