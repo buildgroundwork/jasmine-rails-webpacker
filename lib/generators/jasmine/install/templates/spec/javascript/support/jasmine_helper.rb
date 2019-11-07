@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/BlockComments
+
 # Use this file to set/override Jasmine configuration options
 # You can remove it if you don't need it.
 #
@@ -74,4 +76,6 @@ Jasmine.configure do |config|
   }
 =end
 end
+
+# rubocop:enable Style/BlockComments
 
