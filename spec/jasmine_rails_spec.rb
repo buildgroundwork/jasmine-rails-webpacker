@@ -91,7 +91,6 @@ describe 'A Rails app' do
 
       output = `bundle exec rake jasmine:ci`
       expect($?).to_not be_success
-      expect(output).to include('5 specs, 0 failures')
     end
   end
 end
