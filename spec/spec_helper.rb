@@ -3,7 +3,7 @@ require 'bundler'
 require 'stringio'
 require 'tmpdir'
 
-envs = [:default, :development]
+envs = %i[default development]
 envs << :debug if ENV['DEBUG']
 Bundler.setup(*envs)
 
