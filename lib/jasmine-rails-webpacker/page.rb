@@ -6,7 +6,7 @@ module Jasmine
   class Page < ActionView::Renderer
     def initialize(extra_js: nil)
       @extra_js = extra_js
-      lookup_context = ActionView::LookupContext.new([])
+      @lookup_context = ActionView::LookupContext.new([])
       super(lookup_context)
     end
 
@@ -16,10 +16,10 @@ module Jasmine
 
     private
 
-    attr_reader :extra_js
+    attr_reader :lookup_context, :extra_js
 
     def view
-      @view ||= ActionView::Base.with_empty_template_cache.new
+      @view ||= ActionView::Base.with_empty_template_cache.new(lookup_context)
     end
   end
 end
