@@ -1,20 +1,23 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Jasmine::CiRunner do
-  let(:runner) { double(:runner, :run => nil, boot_js: nil) }
-  let(:runner_factory) { double(:runner_factory, :call => runner) }
+  let(:runner) { double(:runner, run: nil, boot_js: nil) }
+  let(:runner_factory) { double(:runner_factory, call: runner) }
 
   let(:config) do
-    double(:configuration,
-           :runner => runner_factory,
-           :formatters => [],
-           :host => 'http://foo.bar.com',
-           :port => '1234',
-           :rack_options => 'rack options',
-           :stop_spec_on_expectation_failure => false,
-           :stop_on_spec_failure => false,
-           :random => false
-          )
+    double(
+      :configuration,
+      runner: runner_factory,
+      formatters: [],
+      host: 'http://foo.bar.com',
+      port: '1234',
+      rack_options: 'rack options',
+      stop_spec_on_expectation_failure: false,
+      stop_on_spec_failure: false,
+      random: false
+    )
   end
 
   let(:thread_instance) { double(:thread, :abort_on_exception= => nil) }
@@ -26,17 +29,17 @@ describe Jasmine::CiRunner do
     end
     thread
   end
-  let(:application_factory) { double(:application, :app => 'my fake app') }
-  let(:fake_server) { double(:server, :start => nil) }
-  let(:server_factory) { double(:server_factory, :new => fake_server) }
-  let(:outputter) { double(:outputter, :puts => nil) }
+  let(:application_factory) { double(:Application, app: 'my fake app') }
+  let(:fake_server) { double(:server, start: nil) }
+  let(:server_factory) { double(:server_factory, new: fake_server) }
+  let(:outfile) { StringIO.new }
 
   before do
     allow(Jasmine).to receive(:wait_for_listener)
   end
 
   it 'starts a server and runner' do
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -62,17 +65,17 @@ describe Jasmine::CiRunner do
   end
 
   it 'returns true for a successful run' do
-    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, :succeeded? => true) }
+    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, succeeded?: true) }
 
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     expect(ci_runner.run).to be(true)
   end
 
   it 'returns false for a failed run' do
-    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, :succeeded? => false) }
+    allow(Jasmine::Formatters::ExitCode).to receive(:new) { double(:exit_code, succeeded?: false) }
 
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     expect(ci_runner.run).to be(false)
   end
@@ -80,7 +83,7 @@ describe Jasmine::CiRunner do
   it 'can tell the jasmine page to throw expectation failures' do
     allow(config).to receive(:stop_spec_on_expectation_failure) { true }
 
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -90,7 +93,7 @@ describe Jasmine::CiRunner do
   it 'can tell the jasmine page to fail fast' do
     allow(config).to receive(:stop_on_spec_failure) { true }
 
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -100,7 +103,7 @@ describe Jasmine::CiRunner do
   it 'can tell the jasmine page to randomize' do
     allow(config).to receive(:random) { true }
 
-    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -110,7 +113,7 @@ describe Jasmine::CiRunner do
   it 'allows randomization to be turned on, overriding the config' do
     allow(config).to receive(:random) { false }
 
-    ci_runner = Jasmine::CiRunner.new(config, random: true, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, random: true, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -120,7 +123,7 @@ describe Jasmine::CiRunner do
   it 'allows randomization to be turned off, overriding the config' do
     allow(config).to receive(:random) { true }
 
-    ci_runner = Jasmine::CiRunner.new(config, random: false, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, random: false, thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
@@ -128,10 +131,11 @@ describe Jasmine::CiRunner do
   end
 
   it 'allows a randomization seed to be specified' do
-    ci_runner = Jasmine::CiRunner.new(config, seed: '4231', thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outputter: outputter)
+    ci_runner = Jasmine::CiRunner.new(config, seed: '4231', thread: fake_thread, application_factory: application_factory, server_factory: server_factory, outfile: outfile)
 
     ci_runner.run
 
     expect(runner_factory).to have_received(:call).with(instance_of(Jasmine::Formatters::Multi), /\bseed=4231\b/)
   end
 end
+

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jasmine
   module Generators
     class InstallGenerator < Rails::Generators::Base
@@ -8,7 +10,7 @@ module Jasmine
       end
 
       def install_jasmine_core
-        run "yarn add --dev jasmine-core"
+        run 'yarn add --dev jasmine-core'
       end
 
       def copy_jasmine_files
@@ -19,7 +21,7 @@ module Jasmine
       def copy_webpack_initializer
         destination_file_path = File.join('config', 'initializers', 'webpacker.rb')
         initializer = "Webpacker::Compiler.watched_paths << 'spec/javascript/**/*.js'"
-        if File.exists?(File.expand_path(destination_file_path, destination_root))
+        if File.exist?(File.expand_path(destination_file_path, destination_root))
           append_to_file(destination_file_path, initializer)
         else
           create_file(destination_file_path, initializer)
@@ -54,3 +56,4 @@ module Jasmine
     end
   end
 end
+

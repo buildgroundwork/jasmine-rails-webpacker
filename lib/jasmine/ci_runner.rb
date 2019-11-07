@@ -1,13 +1,22 @@
+# frozen_string_literal: true
+
 module Jasmine
   class CiRunner
-    def initialize(config, options = {})
+    def initialize(
+      config,
+      thread: Thread,
+      application_factory: Jasmine::Application,
+      server_factory: Jasmine::Server,
+      outfile: $stdout,
+      **url_options
+    )
       @config = config
-      @thread_class = options.fetch(:thread, Thread)
-      @application_factory = options.fetch(:application_factory, Jasmine::Application)
-      @server_factory = options.fetch(:server_factory, Jasmine::Server)
-      @outputter = options.fetch(:outputter, Kernel)
+      @thread_class = thread
+      @application_factory = application_factory
+      @server_factory = server_factory
+      @outfile = outfile
 
-      build_url(options)
+      build_url(**url_options)
     end
 
     def run
@@ -27,8 +36,8 @@ module Jasmine
       thread = @thread_class.new { server.start }
       thread.abort_on_exception = true
 
-      Jasmine::wait_for_listener(config.port(:ci), config.host.sub(/\Ahttps?:\/\//, ''))
-      @outputter.puts 'jasmine server started'
+      Jasmine.wait_for_listener(config.port(:ci), config.host.sub(%r(\Ahttps?://), ''))
+      @outfile.puts 'jasmine server started'
     end
 
     def build_url(options)

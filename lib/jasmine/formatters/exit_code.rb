@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jasmine
   module Formatters
     class ExitCode
@@ -5,8 +7,7 @@ module Jasmine
         @result = nil
       end
 
-      def format(results)
-      end
+      def format(results); end
 
       def done(result)
         @result = result

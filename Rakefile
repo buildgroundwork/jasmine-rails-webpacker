@@ -1,5 +1,7 @@
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH.unshift File.expand_path("#{File.dirname(__FILE__)}/lib")
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path(__dir__)
+$LOAD_PATH.unshift File.expand_path(File.join(__dir__, 'lib'))
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
@@ -19,5 +21,8 @@ RSpec::Core::RakeTask.new(:performance_specs) do |t|
   t.rspec_opts = '-t performance'
 end
 
-task :default => :spec
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
+
+task default: %i[spec rubocop]
 

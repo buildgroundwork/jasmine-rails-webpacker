@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jasmine
   class Server
     def initialize(port = 8888, application = nil, rack_options = nil, env = ENV)
@@ -9,9 +11,10 @@ module Jasmine
 
     def start
       @env['PORT'] = @port.to_s
-      Rack::Server.start(@rack_options.merge(:Port => @port,
-                                             :AccessLog => [],
-                                             :app => @application))
+      Rack::Server.start(@rack_options.merge(Port: @port,
+                                             AccessLog: [],
+                                             app: @application))
     end
   end
 end
+

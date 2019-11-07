@@ -1,110 +1,113 @@
+# frozen_string_literal: true
+
 module Jasmine
   module Formatters
     class Console
-      def initialize(outputter = Kernel)
+      def initialize(outfile: $stdout)
         @results = []
-        @outputter = outputter
+        @outfile = outfile
       end
 
       def format(results_batch)
-        outputter.print(chars(results_batch))
+        outfile.print(chars(results_batch))
         @results += results_batch
       end
 
       def done(run_details)
-        outputter.puts
+        outfile.puts
 
         run_result = global_failure_details(run_details)
 
         failure_count = results.count(&:failed?)
-        if failure_count > 0
-          outputter.puts('Failures:')
-          outputter.puts(failures(@results))
-          outputter.puts
+        if failure_count.nonzero?
+          outfile.puts('Failures:')
+          outfile.puts(failures(@results))
+          outfile.puts
         end
 
         pending_count = results.count(&:pending?)
-        if pending_count > 0
-          outputter.puts('Pending:')
-          outputter.puts(pending(@results))
-          outputter.puts
+        if pending_count.nonzero?
+          outfile.puts('Pending:')
+          outfile.puts(pending(@results))
+          outfile.puts
         end
 
-        deprecationWarnings = (@results + [run_result]).map(&:deprecation_warnings).flatten
-        if deprecationWarnings.size > 0
-          outputter.puts('Deprecations:')
-          outputter.puts(deprecations(deprecationWarnings))
-          outputter.puts
+        deprecation_warnings = (@results + [run_result]).collect(&:deprecation_warnings).flatten
+        if deprecation_warnings.any?
+          outfile.puts('Deprecations:')
+          outfile.puts(deprecations(deprecation_warnings))
+          outfile.puts
         end
 
-        summary = "#{pluralize(results.size, 'spec')}, " +
-          "#{pluralize(failure_count, 'failure')}"
+        summary = "#{pluralize(results.size, 'spec')}, #{pluralize(failure_count, 'failure')}"
+        summary += ", #{pluralize(pending_count, 'pending spec')}" if pending_count.nonzero?
+        outfile.puts(summary)
 
-        summary += ", #{pluralize(pending_count, 'pending spec')}" if pending_count > 0
-
-        outputter.puts(summary)
-
+        # rubocop:disable Style/IfUnlessModifier
         if run_details['overallStatus'] == 'incomplete'
-          outputter.puts("Incomplete: #{run_details['incompleteReason']}")
+          outfile.puts("Incomplete: #{run_details['incompleteReason']}")
         end
+        # rubocop:enable Style/IfUnlessModifier
 
         if run_details['order'] && run_details['order']['random']
           seed = run_details['order']['seed']
-          outputter.puts("Randomized with seed #{seed} \(rake jasmine:ci\[true,#{seed}])")
+          outfile.puts("Randomized with seed #{seed} \(rake jasmine:ci\[true,#{seed}])")
         end
       end
 
       private
-      attr_reader :results, :outputter
+
+      attr_reader :results, :outfile
 
       def failures(results)
-        results.select(&:failed?).map { |f| failure_message(f) }.join("\n\n")
+        results.select(&:failed?).collect { |f| failure_message(f) }.join("\n\n")
       end
 
       def pending(results)
-        results.select(&:pending?).map { |spec| pending_message(spec) }.join("\n\n")
+        results.select(&:pending?).collect { |spec| pending_message(spec) }.join("\n\n")
       end
 
       def deprecations(warnings)
-        warnings.map { |w| expectation_message(w) }.join("\n\n")
+        warnings.collect { |w| expectation_message(w) }.join("\n\n")
       end
 
       def global_failure_details(run_details)
         result = Jasmine::Result.new(run_details.merge('fullName' => 'Error occurred in afterAll', 'description' => ''))
-        if (result.failed_expectations.size > 0)
-          (loadFails, afterAllFails) = result.failed_expectations.partition {|e| e.globalErrorType == 'load' }
-          report_global_failures('Error during loading', loadFails)
-          report_global_failures('Error occurred in afterAll', afterAllFails)
+        if result.failed_expectations.any?
+          (load_fails, after_all_fails) = result.failed_expectations.partition { |e| e.globalErrorType == 'load' }
+          report_global_failures('Error during loading', load_fails)
+          report_global_failures('Error occurred in afterAll', after_all_fails)
         end
 
         result
       end
 
       def report_global_failures(prefix, fails)
-        if fails.size > 0
+        if fails.any?
           fail_result = Jasmine::Result.new('fullName' => prefix, 'description' => '', 'failedExpectations' => fails)
-          outputter.puts(failure_message(fail_result))
-          outputter.puts
+          outfile.puts(failure_message(fail_result))
+          outfile.puts
         end
       end
 
       def chars(results)
-        results.map do |result|
+        colorized = results.collect do |result|
           if result.succeeded?
             "\e[32m.\e[0m"
           elsif result.pending?
             "\e[33m*\e[0m"
           elsif result.disabled?
-            ""
+            ''
           else
             "\e[31mF\e[0m"
           end
-        end.join('')
+        end
+
+        colorized.join('')
       end
 
       def pluralize(count, str)
-        word = (count == 1) ? str : str + 's'
-        "#{count} #{word}"
+        "#{count} #{count == 1 ? str : str + 's'}"
       end
 
       def pending_message(spec)
@@ -115,7 +118,7 @@ module Jasmine
       end
 
       def failure_message(failure)
-        failure.full_name + "\n" + failure.failed_expectations.map { |fe| expectation_message(fe) }.join("\n")
+        failure.full_name + "\n" + failure.failed_expectations.collect { |fe| expectation_message(fe) }.join("\n")
       end
 
       def expectation_message(expectation)
@@ -128,8 +131,9 @@ module Jasmine
       end
 
       def stack(stack)
-        stack.split("\n").map(&:strip).join("\n      ")
+        stack.split("\n").collect(&:strip).join("\n      ")
       end
     end
   end
 end
+

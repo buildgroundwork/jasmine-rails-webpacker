@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Jasmine::Formatters::Multi do
@@ -25,3 +27,4 @@ describe Jasmine::Formatters::Multi do
     multi.done(run_details)
   end
 end
+

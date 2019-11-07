@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module Jasmine
   class << self
     def configure!
       config_file = Rails.root.join('spec', 'javascript', 'support', 'jasmine_helper.rb')
-      require config_file if File.exists?(config_file)
+      require config_file if File.exist?(config_file)
     end
 
     def configure(&block)
-      block.call(self.config)
+      block.call(config)
     end
 
     def config
@@ -77,9 +79,14 @@ module Jasmine
     end
 
     def map_additional_rack_paths(builder)
+      # Sadly, rubocop can't distinguish between Enumerator#map
+      # and Rack::Builder#map
+      #
+      # rubocop:disable Style/CollectionMethods
       additional_rack_paths.each do |path, handler|
         builder.map(path) { run handler.call }
       end
+      # rubocop:enable Style/CollectionMethods
     end
 
     private
@@ -100,7 +107,7 @@ module Jasmine
 
     def default_chrome_options
       {
-        cli: { "no-sandbox" => nil, "headless" => nil, "remote-debugging-port" => 9222 },
+        cli: { 'no-sandbox' => nil, 'headless' => nil, 'remote-debugging-port' => 9222 },
         startup_timeout: 3,
         binary: nil
       }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack'
 require 'rack/utils'
 require 'rack/jasmine/runner'
@@ -25,9 +27,14 @@ module Jasmine
       private
 
       def map_root(builder, extra_js: )
+        # Sadly, rubocop can't distinguish between Enumerator#map
+        # and Rack::Builder#map
+        #
+        # rubocop:disable Style/CollectionMethods
         page = Jasmine::Page.new(extra_js: extra_js)
         request_handler = Rack::Jasmine::Runner.new(page)
         builder.map('/') { run request_handler }
+        # rubocop:enable Style/CollectionMethods
       end
     end
   end

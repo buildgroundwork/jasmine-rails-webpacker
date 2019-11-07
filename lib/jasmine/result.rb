@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 module Jasmine
   class Result
-
     def self.map_raw_results(raw_results)
-      raw_results.map { |r| new(r) }
+      raw_results.collect { |r| new(r) }
     end
 
     def initialize(attrs)
-      @show_full_stack_trace = attrs["show_full_stack_trace"]
-      @status = attrs["status"]
-      @full_name = attrs["fullName"]
-      @description = attrs["description"]
-      @failed_expectations = map_failures(attrs.fetch("failedExpectations", []))
-      @deprecation_warnings = map_failures(attrs.fetch("deprecationWarnings", []))
+      @show_full_stack_trace = attrs['show_full_stack_trace']
+      @status = attrs['status']
+      @full_name = attrs['fullName']
+      @description = attrs['description']
+      @failed_expectations = map_failures(attrs.fetch('failedExpectations', []))
+      @deprecation_warnings = map_failures(attrs.fetch('deprecationWarnings', []))
       @suite_name = full_name.slice(0, full_name.size - description.size - 1)
-      @pending_reason = attrs["pendingReason"]
+      @pending_reason = attrs['pendingReason']
     end
 
     def succeeded?
@@ -35,24 +36,27 @@ module Jasmine
     attr_reader :full_name, :description, :failed_expectations, :deprecation_warnings, :suite_name, :pending_reason
 
     private
+
     attr_reader :status, :show_full_stack_trace
 
     def map_failures(failures)
-      failures.map do |e|
-        if e["stack"]
-          if show_full_stack_trace
-            stack = e["stack"]
+      failures.collect do |e|
+        stack =
+          if e['stack']
+            if show_full_stack_trace
+              e['stack']
+            else
+              e['stack'].split("\n").slice(0, 7).join("\n")
+            end
           else
-            stack = e["stack"].split("\n").slice(0, 7).join("\n")
+            'No stack trace present.'
           end
-        else
-          stack = "No stack trace present."
-        end
 
-        Failure.new(e["message"], stack, e["globalErrorType"])
+        Failure.new(e['message'], stack, e['globalErrorType'])
       end
     end
 
-    class Failure < Struct.new(:message, :stack, :globalErrorType); end
+    Failure = Struct.new(:message, :stack, :globalErrorType)
   end
 end
+

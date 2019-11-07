@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Jasmine::Runners::ChromeHeadless do
-  let(:config) {
+  let(:config) do
     {
       show_console_log: nil,
       show_full_stack_trace: nil,
@@ -10,7 +12,7 @@ describe Jasmine::Runners::ChromeHeadless do
         binary: nil
       }
     }
-  }
+  end
 
   it 'uses chrome binary from config if set' do
     config[:chrome_options][:binary] = "some_path"
@@ -30,9 +32,7 @@ describe Jasmine::Runners::ChromeHeadless do
     allow(File).to receive(:file?).and_return(false)
     runner = Jasmine::Runners::ChromeHeadless.new(nil, nil, double(config))
 
-    expect {
-      runner.chrome_binary
-    }.to raise_error(RuntimeError)
+    expect { runner.chrome_binary }.to raise_error(RuntimeError)
   end
 
   describe "cli_options_string" do

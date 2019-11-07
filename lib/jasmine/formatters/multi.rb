@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Jasmine
   module Formatters
     class Multi
@@ -15,3 +17,4 @@ module Jasmine
     end
   end
 end
+

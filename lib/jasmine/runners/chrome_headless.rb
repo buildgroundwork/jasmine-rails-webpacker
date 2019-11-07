@@ -1,4 +1,6 @@
-require "socket"
+# frozen_string_literal: true
+
+require 'socket'
 
 module Jasmine
   module Runners
@@ -14,42 +16,40 @@ module Jasmine
         wait_for_chrome_to_start_debug_socket
 
         begin
-          require "chrome_remote"
-        rescue LoadError => e
+          require 'chrome_remote'
+        rescue LoadError
           raise 'Add "chrome_remote" you your Gemfile. To use chromeheadless we require this gem.'
         end
 
         chrome = ChromeRemote.client
-        chrome.send_cmd "Runtime.enable"
-        chrome.send_cmd "Page.navigate", url: jasmine_server_url
-        result_recived = false
+        chrome.send_cmd 'Runtime.enable'
+        chrome.send_cmd 'Page.navigate', url: jasmine_server_url
+        result_received = false
         run_details = { 'random' => false }
-        chrome.on "Runtime.consoleAPICalled" do |params|
-          if params["type"] == "log"
-            if params["args"][0] && params["args"][0]["value"] == "jasmine:spec-result"
-              results = JSON.parse(params["args"][1]["value"], :max_nesting => false)
-                .map { |r| Result.new(r.merge!("show_full_stack_trace" => config.show_full_stack_trace)) }
+        chrome.on 'Runtime.consoleAPICalled' do |params|
+          if params['type'] == 'log'
+            if params['args'][0] && params['args'][0]['value'] == 'jasmine:spec-result'
+              results = JSON.parse(params['args'][1]['value'], max_nesting: false)
+                .collect { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
               formatter.format(results)
-            elsif params["args"][0] && params["args"][0]["value"] == "jasmine:suite-result"
-              results = JSON.parse(params["args"][1]["value"], :max_nesting => false)
-                .map { |r| Result.new(r.merge!("show_full_stack_trace" => config.show_full_stack_trace)) }
+            elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:suite-result'
+              results = JSON.parse(params['args'][1]['value'], max_nesting: false)
+                .collect { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
               failures = results.select(&:failed?)
-              if failures.any?
-                formatter.format(failures)
-              end
-            elsif params["args"][0] && params["args"][0]["value"] == "jasmine:done"
-              result_recived = true
-              run_details = JSON.parse(params["args"][1]["value"], :max_nesting => false)
+              formatter.format(failures) if failures.any?
+            elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:done'
+              result_received = true
+              run_details = JSON.parse(params['args'][1]['value'], max_nesting: false)
             elsif config.show_console_log
-              puts params["args"].map { |e| e["value"] }.join(' ')
+              $stdout.puts params['args'].collect { |e| e['value'] }.join(' ')
             end
           end
         end
 
-        chrome.listen_until {|msg| result_recived }
+        chrome.listen_until { result_received }
         formatter.done(run_details)
-        chrome.send_cmd "Browser.close"
-        Process.kill("INT", chrome_server.pid)
+        chrome.send_cmd 'Browser.close'
+        Process.kill('INT', chrome_server.pid)
       end
 
       def chrome_binary
@@ -78,28 +78,28 @@ module Jasmine
 
       def find_chrome_binary
         potentials = [
-          "/usr/bin/google-chrome",
-          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+          '/usr/bin/google-chrome',
+          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
         ]
         potentials.detect { |path| File.file?(path) } || raise('No Chrome binary found')
       end
 
       def wait_for_chrome_to_start_debug_socket
-        time = Time.now
-        while Time.now - time < config.chrome_options[:startup_timeout]
+        time = Time.now.to_i
+        while Time.now.to_i - time < config.chrome_options[:startup_timeout]
           begin
-            conn = TCPSocket.new('localhost', 9222);
-          rescue SocketError;
+            conn = TCPSocket.new('localhost', 9222)
+          rescue SocketError
             sleep 0.1
             next
-          rescue Errno::ECONNREFUSED;
+          rescue Errno::ECONNREFUSED
             sleep 0.1
             next
-          rescue Errno::EADDRNOTAVAIL;
+          rescue Errno::EADDRNOTAVAIL
             sleep 0.1
             next
           else
-            conn.close;
+            conn.close
             return
           end
         end

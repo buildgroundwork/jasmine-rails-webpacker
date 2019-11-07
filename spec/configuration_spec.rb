@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Jasmine::Configuration do
@@ -20,19 +22,19 @@ describe Jasmine::Configuration do
       end
 
       context "specified with args" do
-        let(:app_args) { %i(foo, bar) }
+        let(:app_args) { %i(foo bar) }
         before { config.add_rack_app(rack_app, *app_args) }
 
         it "should use the specified app" do
           subject.call
           expect(builder).to have_received(:use) do |*used_args, &arg_block|
-            used_args == [rack_app, *app_args] && arg_block == nil
+            used_args == [rack_app, *app_args] && arg_block.nil?
           end
         end
       end
 
       context "specified with args and a block" do
-        let(:app_args) { %i(foo, bar) }
+        let(:app_args) { %i(foo bar) }
         let(:app_block) { -> { true } }
         before { config.add_rack_app(rack_app, *app_args) }
 
