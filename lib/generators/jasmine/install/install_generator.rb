@@ -1,9 +1,10 @@
 module Jasmine
   module Generators
     class InstallGenerator < Rails::Generators::Base
-
-      def self.source_root
-        @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+      class << self
+        def source_root
+          @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+        end
       end
 
       def install_jasmine_core
@@ -13,6 +14,16 @@ module Jasmine
       def copy_jasmine_files
         directory 'app'
         directory 'spec'
+      end
+
+      def copy_webpack_initializer
+        destination_file_path = File.join('config', 'initializers', 'webpacker.rb')
+        initializer = "Webpacker::Compiler.watched_paths << 'spec/javascripts/**/*.js'"
+        if File.exists?(File.expand_path(destination_file_path, destination_root))
+          append_to_file(destination_file_path, initializer)
+        else
+          create_file(destination_file_path, initializer)
+        end
       end
 
       def add_spec_directory_to_resolved_modules
