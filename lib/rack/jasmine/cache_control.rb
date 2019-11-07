@@ -2,7 +2,6 @@
 
 module Rack
   module Jasmine
-
     class CacheControl
       def initialize(app)
         @app, @content_type = app
@@ -16,7 +15,6 @@ module Rack
         [status, headers, body]
       end
     end
-
   end
 end
 

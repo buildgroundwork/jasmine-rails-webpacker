@@ -2,7 +2,6 @@
 
 module Rack
   module Jasmine
-
     class FocusedSuite
       def initialize(runner_config)
         @runner_config = runner_config
@@ -13,7 +12,6 @@ module Rack
         run_adapter.run(env['PATH_INFO'])
       end
     end
-
   end
 end
 

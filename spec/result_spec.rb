@@ -40,7 +40,6 @@ describe Jasmine::Result do
       expectation = result.failed_expectations[0].stack
       expect(expectation).to match(/No stack/)
     end
-
   end
 end
 

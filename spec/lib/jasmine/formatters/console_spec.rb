@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe Jasmine::Formatters::Console do
-
   let(:outputter_output) { String.new }
   let(:outputter) do
     double(:outputter).tap do |o|
@@ -146,7 +145,6 @@ describe Jasmine::Formatters::Console do
     end
 
     describe 'when there are no pending specs' do
-
       it 'should not mention pending specs' do
         results = [passing_result]
         console = Jasmine::Formatters::Console.new(outputter)

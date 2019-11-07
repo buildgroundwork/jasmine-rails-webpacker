@@ -2,7 +2,6 @@
 
 module Jasmine
   class Result
-
     def self.map_raw_results(raw_results)
       raw_results.map { |r| new(r) }
     end

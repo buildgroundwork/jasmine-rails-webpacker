@@ -3,7 +3,6 @@
 module Jasmine
   module Generators
     class ExamplesGenerator < Rails::Generators::Base
-
       def self.source_root
         @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
       end
