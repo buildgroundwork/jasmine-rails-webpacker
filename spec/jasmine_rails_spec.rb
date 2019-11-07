@@ -91,7 +91,7 @@ describe 'A Rails app' do
     Bundler.with_clean_env do
       FileUtils.cp(File.join(@root, 'spec', 'fixture', 'exception_spec.js'), File.join('spec', 'javascript'))
 
-      output = `bundle exec rake jasmine:ci`
+      `bundle exec rake jasmine:ci`
       expect($?).to_not be_success
     end
   end

@@ -43,7 +43,7 @@ namespace :jasmine do
   task :configure_plugins
 
   desc 'Run jasmine tests in a browser, random and seed override config'
-  task :ci, %i[random seed] => %w(jasmine:require_json jasmine:configure jasmine:configure_plugins) do |t, args|
+  task :ci, %i[random seed] => %w(jasmine:require_json jasmine:configure jasmine:configure_plugins) do |_, args|
     ci_runner = Jasmine::CiRunner.new(Jasmine.config, args.to_hash)
     exit(1) unless ci_runner.run
   end

@@ -17,14 +17,14 @@ module Jasmine
 
         begin
           require 'chrome_remote'
-        rescue LoadError => e
+        rescue LoadError
           raise 'Add "chrome_remote" you your Gemfile. To use chromeheadless we require this gem.'
         end
 
         chrome = ChromeRemote.client
         chrome.send_cmd 'Runtime.enable'
         chrome.send_cmd 'Page.navigate', url: jasmine_server_url
-        result_recived = false
+        result_received = false
         run_details = { 'random' => false }
         chrome.on 'Runtime.consoleAPICalled' do |params|
           if params['type'] == 'log'
@@ -40,7 +40,7 @@ module Jasmine
                 formatter.format(failures)
               end
             elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:done'
-              result_recived = true
+              result_received = true
               run_details = JSON.parse(params['args'][1]['value'], :max_nesting => false)
             elsif config.show_console_log
               puts params['args'].map { |e| e['value'] }.join(' ')
@@ -48,7 +48,7 @@ module Jasmine
           end
         end
 
-        chrome.listen_until { |msg| result_recived }
+        chrome.listen_until { result_received }
         formatter.done(run_details)
         chrome.send_cmd 'Browser.close'
         Process.kill('INT', chrome_server.pid)
