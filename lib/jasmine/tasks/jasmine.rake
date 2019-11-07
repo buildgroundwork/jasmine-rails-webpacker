@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 if Rake.application.tasks.any? { |t| t.name == 'jasmine/ci' }
-  message = <<~EOF
+  message = <<~MSG
 
                                 WARNING
     Detected that jasmine rake tasks have been loaded twice.
@@ -12,7 +12,7 @@ if Rake.application.tasks.any? { |t| t.name == 'jasmine/ci' }
     with either 'jasmine init' or 'rails g jasmine:install'.
 
 
-  EOF
+  MSG
   raise Exception.new(message)
 end
 
