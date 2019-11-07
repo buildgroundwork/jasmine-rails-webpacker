@@ -14,6 +14,6 @@
   File.join('runners', 'chrome_headless'),
   'railtie'
 ].each do |file|
-  require File.join('jasmine', file)
+  require File.join('jasmine-rails-webpacker', file)
 end
 

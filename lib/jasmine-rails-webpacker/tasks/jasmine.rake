@@ -31,7 +31,7 @@ namespace :jasmine do
   end
 
   task require: %i[environment set_test_env] do
-    require 'jasmine'
+    require 'jasmine-rails-webpacker'
   end
 
   task configure: :require do

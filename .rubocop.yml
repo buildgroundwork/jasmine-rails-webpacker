@@ -93,6 +93,7 @@ Layout/TrailingBlankLines:
 Naming/FileName:
   Exclude:
     - 'gems/**/*'
+    - lib/jasmine-rails-webpacker.rb
 
 #===============
 # Style

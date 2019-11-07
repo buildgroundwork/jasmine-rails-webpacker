@@ -16,7 +16,7 @@ module Jasmine
     end
 
     rake_tasks do
-      load 'jasmine/tasks/jasmine.rake'
+      load 'jasmine-rails-webpacker/tasks/jasmine.rake'
     end
   end
 end

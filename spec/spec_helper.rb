@@ -10,7 +10,7 @@ envs << :debug if ENV['DEBUG']
 Bundler.setup(*envs)
 
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
-require 'jasmine'
+require 'jasmine-rails-webpacker'
 require 'rspec'
 
 def create_temp_dir
