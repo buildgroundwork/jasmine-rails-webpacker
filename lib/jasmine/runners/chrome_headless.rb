@@ -36,9 +36,7 @@ module Jasmine
               results = JSON.parse(params['args'][1]['value'], max_nesting: false)
                 .map { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
               failures = results.select(&:failed?)
-              if failures.any?
-                formatter.format(failures)
-              end
+              formatter.format(failures) if failures.any?
             elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:done'
               result_received = true
               run_details = JSON.parse(params['args'][1]['value'], max_nesting: false)

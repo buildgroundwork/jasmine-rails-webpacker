@@ -18,12 +18,10 @@ end
 
 namespace :jasmine do
   task :require_json do
-    begin
-      require 'json'
-    rescue LoadError
-      puts 'You must have a JSON library installed to run jasmine:ci. Try "gem install json"'
-      exit
-    end
+    require 'json'
+  rescue LoadError
+    puts 'You must have a JSON library installed to run jasmine:ci. Try "gem install json"'
+    exit
   end
 
   task :set_test_env do

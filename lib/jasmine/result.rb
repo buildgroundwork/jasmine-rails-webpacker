@@ -41,21 +41,22 @@ module Jasmine
 
     def map_failures(failures)
       failures.map do |e|
-        if e['stack']
-          if show_full_stack_trace
-            stack = e['stack']
+        stack =
+          if e['stack']
+            if show_full_stack_trace
+              e['stack']
+            else
+              e['stack'].split("\n").slice(0, 7).join("\n")
+            end
           else
-            stack = e['stack'].split("\n").slice(0, 7).join("\n")
+            'No stack trace present.'
           end
-        else
-          stack = 'No stack trace present.'
-        end
 
         Failure.new(e['message'], stack, e['globalErrorType'])
       end
     end
 
-    class Failure < Struct.new(:message, :stack, :globalErrorType); end
+    Failure = Struct.new(:message, :stack, :globalErrorType)
   end
 end
 

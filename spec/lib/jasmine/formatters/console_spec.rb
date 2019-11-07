@@ -179,7 +179,7 @@ describe Jasmine::Formatters::Console do
             'globalErrorType' => 'load',
             'message' => 'Another Load Error',
             'stack' => 'even more info'
-          },
+          }
         ])
 
         expect(outputter_output).to match(/Error during loading/)
@@ -201,7 +201,7 @@ describe Jasmine::Formatters::Console do
             'globalErrorType' => 'afterAll',
             'message' => 'Another Failure',
             'stack' => 'even more info'
-          },
+          }
         ])
 
         expect(outputter_output).to match(/Error occurred in afterAll/)

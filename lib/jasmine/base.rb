@@ -6,7 +6,7 @@ require 'erb'
 module Jasmine
   # this seemingly-over-complex method is necessary to get an open port on at least some of our Macs
   def self.open_socket_on_unused_port
-    infos = Socket::getaddrinfo('localhost', nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
+    infos = Socket.getaddrinfo('localhost', nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
     families = Hash[*infos.collect { |af, *_| af }.uniq.zip([]).flatten]
 
     if families.has_key?('AF_INET')

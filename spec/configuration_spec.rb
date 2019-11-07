@@ -28,7 +28,7 @@ describe Jasmine::Configuration do
         it "should use the specified app" do
           subject.call
           expect(builder).to have_received(:use) do |*used_args, &arg_block|
-            used_args == [rack_app, *app_args] && arg_block == nil
+            used_args == [rack_app, *app_args] && arg_block.nil?
           end
         end
       end

@@ -29,7 +29,7 @@ describe Jasmine::CiRunner do
     end
     thread
   end
-  let(:application_factory) { double(:application, app: 'my fake app') }
+  let(:application_factory) { double(:Application, app: 'my fake app') }
   let(:fake_server) { double(:server, start: nil) }
   let(:server_factory) { double(:server_factory, new: fake_server) }
   let(:outputter) { double(:outputter, puts: nil) }

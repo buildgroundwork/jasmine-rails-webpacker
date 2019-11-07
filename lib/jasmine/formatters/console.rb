@@ -19,36 +19,35 @@ module Jasmine
         run_result = global_failure_details(run_details)
 
         failure_count = results.count(&:failed?)
-        if failure_count > 0
+        if failure_count.nonzero?
           outputter.puts('Failures:')
           outputter.puts(failures(@results))
           outputter.puts
         end
 
         pending_count = results.count(&:pending?)
-        if pending_count > 0
+        if pending_count.nonzero?
           outputter.puts('Pending:')
           outputter.puts(pending(@results))
           outputter.puts
         end
 
         deprecation_warnings = (@results + [run_result]).map(&:deprecation_warnings).flatten
-        if deprecation_warnings.size > 0
+        if deprecation_warnings.any?
           outputter.puts('Deprecations:')
           outputter.puts(deprecations(deprecation_warnings))
           outputter.puts
         end
 
-        summary = "#{pluralize(results.size, 'spec')}, " +
-          "#{pluralize(failure_count, 'failure')}"
-
-        summary += ", #{pluralize(pending_count, 'pending spec')}" if pending_count > 0
-
+        summary = "#{pluralize(results.size, 'spec')}, #{pluralize(failure_count, 'failure')}"
+        summary += ", #{pluralize(pending_count, 'pending spec')}" if pending_count.nonzero?
         outputter.puts(summary)
 
+        # rubocop:disable Style/IfUnlessModifier
         if run_details['overallStatus'] == 'incomplete'
           outputter.puts("Incomplete: #{run_details['incompleteReason']}")
         end
+        # rubocop:enable Style/IfUnlessModifier
 
         if run_details['order'] && run_details['order']['random']
           seed = run_details['order']['seed']
@@ -74,7 +73,7 @@ module Jasmine
 
       def global_failure_details(run_details)
         result = Jasmine::Result.new(run_details.merge('fullName' => 'Error occurred in afterAll', 'description' => ''))
-        if (result.failed_expectations.size > 0)
+        if result.failed_expectations.any?
           (load_fails, after_all_fails) = result.failed_expectations.partition { |e| e.globalErrorType == 'load' }
           report_global_failures('Error during loading', load_fails)
           report_global_failures('Error occurred in afterAll', after_all_fails)
@@ -84,7 +83,7 @@ module Jasmine
       end
 
       def report_global_failures(prefix, fails)
-        if fails.size > 0
+        if fails.any?
           fail_result = Jasmine::Result.new('fullName' => prefix, 'description' => '', 'failedExpectations' => fails)
           outputter.puts(failure_message(fail_result))
           outputter.puts
@@ -92,7 +91,7 @@ module Jasmine
       end
 
       def chars(results)
-        results.map do |result|
+        colorized = results.map do |result|
           if result.succeeded?
             "\e[32m.\e[0m"
           elsif result.pending?
@@ -102,12 +101,13 @@ module Jasmine
           else
             "\e[31mF\e[0m"
           end
-        end.join('')
+        end
+
+        colorized.join('')
       end
 
       def pluralize(count, str)
-        word = (count == 1) ? str : str + 's'
-        "#{count} #{word}"
+        "#{count} #{count == 1 ? str : str + 's'}"
       end
 
       def pending_message(spec)

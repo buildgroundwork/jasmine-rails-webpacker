@@ -8,7 +8,7 @@ module Jasmine
     end
 
     def configure(&block)
-      block.call(self.config)
+      block.call(config)
     end
 
     def config

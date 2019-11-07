@@ -4,9 +4,7 @@ require 'spec_helper'
 
 describe Jasmine::Server do
   before do
-    if !Rack.constants.include?(:Server)
-      Rack::Server = double("Rack::Server")
-    end
+    Rack::Server = double("Rack::Server") unless Rack.constants.include?(:Server)
     @fake_env = {}
   end
 

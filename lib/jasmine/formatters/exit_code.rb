@@ -7,8 +7,7 @@ module Jasmine
         @result = nil
       end
 
-      def format(results)
-      end
+      def format(results); end
 
       def done(result)
         @result = result

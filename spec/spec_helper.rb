@@ -9,7 +9,7 @@ envs = %i[default development]
 envs << :debug if ENV['DEBUG']
 Bundler.setup(*envs)
 
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
 require 'jasmine'
 require 'rspec'
 
@@ -22,12 +22,12 @@ end
 
 def temp_dir_before
   @root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-  @old_dir = Dir::pwd
+  @old_dir = Dir.pwd
   @tmp = create_temp_dir
 end
 
 def temp_dir_after
-  Dir::chdir @old_dir
+  Dir.chdir @old_dir
   FileUtils.rm_r @tmp
 end
 
@@ -36,7 +36,7 @@ module Kernel
     out = StringIO.new
     $stdout = out
     yield
-    return out.string
+    out.string
   ensure
     $stdout = STDOUT
   end
@@ -116,8 +116,7 @@ def deprecation_raw_result
     'description' => 'Deprecations',
     'failedExpectations' => [],
     'deprecationWarnings' => [{
-      'message' => 'deprecated call',
-
+      'message' => 'deprecated call'
     }]
   }
 end
