@@ -18,7 +18,7 @@ module Jasmine
 
       def copy_webpack_initializer
         destination_file_path = File.join('config', 'initializers', 'webpacker.rb')
-        initializer = "Webpacker::Compiler.watched_paths << 'spec/javascripts/**/*.js'"
+        initializer = "Webpacker::Compiler.watched_paths << 'spec/javascript/**/*.js'"
         if File.exists?(File.expand_path(destination_file_path, destination_root))
           append_to_file(destination_file_path, initializer)
         else

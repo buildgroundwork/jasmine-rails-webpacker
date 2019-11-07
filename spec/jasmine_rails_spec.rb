@@ -22,13 +22,13 @@ describe 'A Rails app' do
   def install_jasmine
     `bundle exec rails g jasmine:install`
     expect($?).to be_success
-    expect(File.exists?('spec/javascripts/helpers/.gitkeep')).to be_truthy
-    expect(File.exists?('spec/javascripts/support/jasmine_helper.rb')).to be_truthy
+    expect(File.exists?('spec/javascript/helpers/.gitkeep')).to be_truthy
+    expect(File.exists?('spec/javascript/support/jasmine_helper.rb')).to be_truthy
     `bundle exec rails g jasmine:examples`
     expect(File.exists?('app/javascript/jasmine_examples/Player.js')).to be_truthy
     expect(File.exists?('app/javascript/jasmine_examples/Song.js')).to be_truthy
-    expect(File.exists?('spec/javascripts/jasmine_examples/PlayerSpec.js')).to be_truthy
-    expect(File.exists?('spec/javascripts/helpers/jasmine_examples/SpecHelper.js')).to be_truthy
+    expect(File.exists?('spec/javascript/jasmine_examples/PlayerSpec.js')).to be_truthy
+    expect(File.exists?('spec/javascript/helpers/jasmine_examples/SpecHelper.js')).to be_truthy
   end
 
   before :all do
@@ -77,7 +77,7 @@ describe 'A Rails app' do
 
   it "rake jasmine:ci returns proper exit code when specs fail" do
     Bundler.with_clean_env do
-      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'failing_spec.js'), File.join('spec', 'javascripts'))
+      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'failing_spec.js'), File.join('spec', 'javascript'))
 
       output = `bundle exec rake jasmine:ci`
       expect($?).to_not be_success
@@ -87,7 +87,7 @@ describe 'A Rails app' do
 
   it "rake jasmine:ci runs specs when an error occurs in the javascript" do
     Bundler.with_clean_env do
-      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'exception_spec.js'), File.join('spec', 'javascripts'))
+      FileUtils.cp(File.join(@root, 'spec', 'fixture', 'exception_spec.js'), File.join('spec', 'javascript'))
 
       output = `bundle exec rake jasmine:ci`
       expect($?).to_not be_success

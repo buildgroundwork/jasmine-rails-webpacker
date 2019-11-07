@@ -5,7 +5,8 @@ Example:
     rails generate jasmine:examples
 
     This will create:
-        public/javascripts/jasmine_examples/PlayerSpec.js
-        public/javascripts/jasmine_examples/SpecHelper.js
-        spec/javascripts/jasmine_examples/PlayerSpec.js
-        spec/javascripts/jasmine_examples/SpecHelper.js
+        app/javascript/jasmine_examples/Player.js
+        app/javascript/jasmine_examples/Song.js
+        spec/javascript/jasmine_examples/PlayerSpec.js
+        spec/javascript/helpers/jasmine_examples/SpecHelper.js
+

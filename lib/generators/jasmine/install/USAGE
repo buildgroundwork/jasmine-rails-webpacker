@@ -5,5 +5,12 @@ Example:
     rails generate jasmine:install
 
     This will create:
-        spec/javascripts/support/jasmine_helper.rb
-        spec/javascripts/helpers/.gitkeep
+        app/javascript/packs/jasmine.rb
+        app/javascript/packs/specs.rb
+        spec/javascript/support/jasmine_helper.rb
+        spec/javascript/helpers/.gitkeep
+
+    This will create or modify:
+        config/initializers/webpack.rb
+        config/webpack/test.js
+
