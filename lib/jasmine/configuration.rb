@@ -79,9 +79,14 @@ module Jasmine
     end
 
     def map_additional_rack_paths(builder)
+      # Sadly, rubocop can't distinguish between Enumerator#map
+      # and Rack::Builder#map
+      #
+      # rubocop:disable Style/CollectionMethods
       additional_rack_paths.each do |path, handler|
         builder.map(path) { run handler.call }
       end
+      # rubocop:enable Style/CollectionMethods
     end
 
     private

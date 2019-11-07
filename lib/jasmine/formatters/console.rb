@@ -32,7 +32,7 @@ module Jasmine
           outputter.puts
         end
 
-        deprecation_warnings = (@results + [run_result]).map(&:deprecation_warnings).flatten
+        deprecation_warnings = (@results + [run_result]).collect(&:deprecation_warnings).flatten
         if deprecation_warnings.any?
           outputter.puts('Deprecations:')
           outputter.puts(deprecations(deprecation_warnings))
@@ -60,15 +60,15 @@ module Jasmine
       attr_reader :results, :outputter
 
       def failures(results)
-        results.select(&:failed?).map { |f| failure_message(f) }.join("\n\n")
+        results.select(&:failed?).collect { |f| failure_message(f) }.join("\n\n")
       end
 
       def pending(results)
-        results.select(&:pending?).map { |spec| pending_message(spec) }.join("\n\n")
+        results.select(&:pending?).collect { |spec| pending_message(spec) }.join("\n\n")
       end
 
       def deprecations(warnings)
-        warnings.map { |w| expectation_message(w) }.join("\n\n")
+        warnings.collect { |w| expectation_message(w) }.join("\n\n")
       end
 
       def global_failure_details(run_details)
@@ -91,7 +91,7 @@ module Jasmine
       end
 
       def chars(results)
-        colorized = results.map do |result|
+        colorized = results.collect do |result|
           if result.succeeded?
             "\e[32m.\e[0m"
           elsif result.pending?
@@ -118,7 +118,7 @@ module Jasmine
       end
 
       def failure_message(failure)
-        failure.full_name + "\n" + failure.failed_expectations.map { |fe| expectation_message(fe) }.join("\n")
+        failure.full_name + "\n" + failure.failed_expectations.collect { |fe| expectation_message(fe) }.join("\n")
       end
 
       def expectation_message(expectation)
@@ -131,7 +131,7 @@ module Jasmine
       end
 
       def stack(stack)
-        stack.split("\n").map(&:strip).join("\n      ")
+        stack.split("\n").collect(&:strip).join("\n      ")
       end
     end
   end

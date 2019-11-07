@@ -3,7 +3,7 @@
 module Jasmine
   class Result
     def self.map_raw_results(raw_results)
-      raw_results.map { |r| new(r) }
+      raw_results.collect { |r| new(r) }
     end
 
     def initialize(attrs)
@@ -40,7 +40,7 @@ module Jasmine
     attr_reader :status, :show_full_stack_trace
 
     def map_failures(failures)
-      failures.map do |e|
+      failures.collect do |e|
         stack =
           if e['stack']
             if show_full_stack_trace

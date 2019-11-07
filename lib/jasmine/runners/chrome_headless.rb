@@ -30,18 +30,18 @@ module Jasmine
           if params['type'] == 'log'
             if params['args'][0] && params['args'][0]['value'] == 'jasmine:spec-result'
               results = JSON.parse(params['args'][1]['value'], max_nesting: false)
-                .map { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
+                .collect { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
               formatter.format(results)
             elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:suite-result'
               results = JSON.parse(params['args'][1]['value'], max_nesting: false)
-                .map { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
+                .collect { |r| Result.new(r.merge!('show_full_stack_trace' => config.show_full_stack_trace)) }
               failures = results.select(&:failed?)
               formatter.format(failures) if failures.any?
             elsif params['args'][0] && params['args'][0]['value'] == 'jasmine:done'
               result_received = true
               run_details = JSON.parse(params['args'][1]['value'], max_nesting: false)
             elsif config.show_console_log
-              puts params['args'].map { |e| e['value'] }.join(' ')
+              puts params['args'].collect { |e| e['value'] }.join(' ')
             end
           end
         end
