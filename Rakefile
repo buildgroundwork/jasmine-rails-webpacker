@@ -5,7 +5,7 @@ $LOAD_PATH.unshift File.expand_path(File.join(__dir__, 'lib'))
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-require 'jasmine'
+require 'jasmine-rails-webpacker'
 require 'rspec'
 require 'rspec/core/rake_task'
 
