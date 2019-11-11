@@ -25,7 +25,7 @@ namespace :jasmine do
   end
 
   task :set_test_env do
-    Rails.env = ENV['RAILS_ENV'] = ENV['NODE_ENV'] = 'test'
+    Rails.env = ENV['RAILS_ENV'] = 'test'
     # Force Webpacker to reload the instance in test mode.
     Webpacker.instance = nil
   end

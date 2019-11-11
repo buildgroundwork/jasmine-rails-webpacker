@@ -44,10 +44,13 @@ module Jasmine
         # because these two directories should have similar structure.
         #
         # Does adding spec/javascript/helpers and app/javascript/helpers both
-        # to the context slow down lookup?  I don't know, but the intention of
-        # the first require line seems more clear.
-        content = "environment.resolvedModules.append('project root', '.');\n"
-        inject_into_file('config/webpack/test.js', content, after: /const environment =.*\n/)
+        # to the context slow down lookup?  It doesn't seem so, and the
+        # intention of the first require line seems more clear.
+        content = <<~CONTENT
+          const webpack = require('webpack');
+          environment.resolvedModules.append('project root', '.');
+        CONTENT
+        append_to_file('config/webpack/environment.js', content)
       end
 
       def app_name
