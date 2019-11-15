@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary            = %q{JavaScript BDD framework}
   s.description        = %q{Test your JavaScript with a nice descriptive syntax in Rails with Webpacker.}
   s.email              = %q{social@buildgroundwork.com}
-  s.homepage           = "https://buildgroundwork.com"
+  s.homepage           = "https://jasmine.github.io"
   s.license            = "MIT"
 
   s.files              = `git ls-files`.split("\n") | Dir.glob('jasmine-rails-webpacker/**/*')

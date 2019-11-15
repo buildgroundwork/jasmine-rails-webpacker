@@ -1,109 +1,125 @@
-# The Jasmine Gem (or a portion thereof)
+# Jasmine for Rails with Webpacker
 
-## This documentation is not up to date.
-## Please be patient.
+** Note: this gem is *only* for use with Rails+Webpacker (e.g. Rails 6), and thus has a hard dependency on Rails **
 
-The [Jasmine](http://github.com/jasmine/jasmine) Ruby Gem is a package of helper code for developing Jasmine projects for Ruby-based web projects (Rails, Sinatra, etc.) or for JavaScript projects where Ruby is a welcome partner. It serves up a project's Jasmine suite in a browser so you can focus on your code instead of manually editing script tags in the Jasmine runner HTML file.
+- I have tested this with Rails 6.  I have not testing with Rails 5 + Webpacker or similar.
+- This should have no dependencies on the Rails Asset Pipeline, so should work fine in a pure Webpacker project.
 
-## Contents
-This gem contains:
+** Note: The core jasmine project will not work with Webpack until resolution of [this pull request](https://github.com/jasmine/jasmine/pull/1766).  See installation notes below for a workaround.**
 
-* A small server that builds and executes a Jasmine suite for a project
-* A script that sets up a project to use the Jasmine gem's server
-* Generators for Ruby on Rails projects (Rails 4 and 5)
+This library allows you to run a Rails project's Jasmine suite in a browser or on the command line.
 
-You can get all of this by: `gem install jasmine` or by adding Jasmine to your `Gemfile`.
+## Getting started
 
+Add the following to your `Gemfile`:
 ```ruby
 group :development, :test do
-  gem 'jasmine'
+  ...
+  # Using the github link just until we get this published
+  gem 'jasmine-rails-webpacker', github: 'buildgroundwork/jasmine-rails-webpacker'
 end
 ```
 
-## Init A Project
+Next, run the installation generator for your project:
 
-To initialize a rails project for Jasmine
+```bash
+% rails generate jasmine:install
+```
 
-    rails generate jasmine:install
+If you would like some example specs to get you started you can run the examples generator:
 
-    rails generate jasmine:examples
+```bash
+% rails generate jasmine:examples
+```
 
-For any other project (Sinatra, Merb, or something we don't yet know about) use
+** Note: Workaround for Jasmine's incompatibility with Webpack (see note above):**
 
-    jasmine init
+```bash
+% yarn remove jasmine-core
+% yarn add --dev https://github.com/buildgroundwork/jasmine.git
+```
 
-    jasmine examples
+### Under the hood
+
+The installation generator will create two new files in your packs directory, a new initializer, and a spec directory to mirror your production javascript directory:
+
+```
+<project root>
+> app
+  > javascript
+    > packs
+      > jasmine.js
+      > specs.js
+> config
+  > initializers
+    > jasmine.rb
+> spec
+  > javascript
+    > helpers
+      > .gitkeep 
+```
+
+The installation will also add a line to your Webpack environment configuration (`config/webpack/environment.js`) so that Webpacker can find your specs.  The file should look like this after a clean install:
+
+```javascript
+const { environment } = require('@rails/webpacker')
+
+module.exports = environment;
+
+environment.resolvedModules.append('project root', '.'); // <== added
+```
 
 ## Usage
 
 Start the Jasmine server:
 
-    rake jasmine
+```bash
+% rake jasmine
+```
 
 Point your browser to `localhost:8888`. The suite will run every time this page is re-loaded.
 
-For Continuous Integration environments, add this task to the project build steps:
+To run from the command line:
 
-    rake jasmine:ci
+```bash
+% rake jasmine:ci
+```
 
-This uses Chrome Headless to load and run the Jasmine suite.
+** Note: PhantomJS is no longer actively supported (see [here](https://github.com/ariya/phantomjs/issues/15344)).**
+
+This uses Chrome Remote to load and run the Jasmine suite without a browser.
 
 ## Configuration
 
-Customize `spec/javascripts/support/jasmine.yml` to enumerate the source files, stylesheets, and spec files you would like the Jasmine runner to include.
-You may use dir glob strings.
+** Note: This project no longer uses the `jasmine.yml` file used by previous incarnations of Jasmine for configuration **
 
-Alternatively, you may specify the path to your `jasmine.yml` by setting an environment variable:
+This project adds the `chrome_remote` as a dependency; no need to add that to your `Gemfile`.
 
-`rake jasmine:ci JASMINE_CONFIG_PATH=relative/path/to/your/jasmine.yml`
+### config/initializers/jasmine.rb
 
-In addition, the `spec_helper` key in your jasmine.yml specifies the path to a ruby file that can do programmatic configuration.
-After running `jasmine init` or `rails generate jasmine:install` it will point to `spec/javascripts/support/jasmine_helper.rb` which you can modify to fit your needs.
+You can configure Jasmine's behavior using the `config` block in this initializer.  The default initializer created by the installation includes descriptions of each setting.
 
-### Running Jasmine on a different port
+This file also includes a line that tells Webpacker to watch spec files for changes:
 
-The ports that `rake jasmine` (or `rake jasmine:server`) and `rake jasmine:ci` run on are configured independently, so they can both run at the same time.
-
-To change the port that `rake jasmine` uses:
-
-In your jasmine_helper.rb:
-
-    Jasmine.configure do |config|
-       config.server_port = 5555
-    end
-
-By default `rake jasmine:ci` will attempt to find a random open port, to set the port that `rake jasmine:ci` uses:
-
-In your jasmine_helper.rb:
-
-    Jasmine.configure do |config|
-       config.ci_port = 1234
-    end
-
-## Using headless Chrome
-
-* Add `chrome_remote` as a dependency
-* In your jasmine_helper.rb:
 ```ruby
-Jasmine.configure do |config|
-  config.runner_browser = :chromeheadless
-end
+  Webpacker::Compiler.watched_paths << 'spec/javascript/**/*.js'
 ```
 
-### Additional configuration options
+You should not remove this file, unless you include that line elsewhere in your test environment.  You will need to update this line if you choose to keep your specs in a different directory.
 
-* `config.chrome_binary` - to customize which binary to execute
-* `config.chrome_cli_options` - if you know what you're doing you can customize the CLI
-* `config.chrome_startup_timeout` - change the amount of time to wait for chrome to start
+You can customize which files your test process includes by adding them directly to the generated pack files. 
 
-### On Travis-CI
+### packs/jasmine.js
 
-Add this to your `.travis.yml`
+This packages all of the Jasmine-specific JavaScript needed to run your tests.  You will likely not need to modify this file. 
 
-```yaml
-addons:
-  chrome: stable
-```
+** You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite. **
+
+### packs/spec.js
+
+This packages all of your specs.  By default it will recursively include any spec files (ending in `_spec.js` or `Spec.js`) in the `specs/javascript` directory, as well as any `.js` files in the `spec/javascript/helpers` directory.
+
+** You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite. **
 
 ## Support
 
@@ -111,10 +127,10 @@ Documentation: [jasmine.github.io](https://jasmine.github.io)
 Jasmine Mailing list: [jasmine-js@googlegroups.com](mailto:jasmine-js@googlegroups.com)
 Twitter: [@jasminebdd](http://twitter.com/jasminebdd)
 
-Please file issues here at Github
-
-Copyright (c) 2008-2017 Pivotal Labs. This software is licensed under the MIT License.
-
+Please file issues here at Github.
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine-gem.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine-gem?ref=badge_large)
+MIT License.
+
+See `MIT.LICENSE` file in this repository.
+
