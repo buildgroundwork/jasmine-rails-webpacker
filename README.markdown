@@ -1,11 +1,11 @@
 # Jasmine for Rails with Webpacker
 
-** Note: this gem is *only* for use with Rails+Webpacker (e.g. Rails 6), and thus has a hard dependency on Rails **
+**Note: this gem is *only* for use with Rails+Webpacker (e.g. Rails 6), and thus has a hard dependency on Rails**
 
 - I have tested this with Rails 6.  I have not testing with Rails 5 + Webpacker or similar.
 - This should have no dependencies on the Rails Asset Pipeline, so should work fine in a pure Webpacker project.
 
-** Note: The core jasmine project will not work with Webpack until resolution of [this pull request](https://github.com/jasmine/jasmine/pull/1766).  See installation notes below for a workaround.**
+**Note: The core jasmine project will not work with Webpack until resolution of [this pull request](https://github.com/jasmine/jasmine/pull/1766).  See installation notes below for a workaround.**
 
 This library allows you to run a Rails project's Jasmine suite in a browser or on the command line.
 
@@ -32,7 +32,7 @@ If you would like some example specs to get you started you can run the examples
 % rails generate jasmine:examples
 ```
 
-** Note: Workaround for Jasmine's incompatibility with Webpack (see note above):**
+**Note: Workaround for Jasmine's incompatibility with Webpack (see note above):**
 
 ```bash
 % yarn remove jasmine-core
@@ -85,13 +85,13 @@ To run from the command line:
 % rake jasmine:ci
 ```
 
-** Note: PhantomJS is no longer actively supported (see [here](https://github.com/ariya/phantomjs/issues/15344)).**
+**Note: PhantomJS is no longer actively supported (see [here](https://github.com/ariya/phantomjs/issues/15344)).**
 
 This uses Chrome Remote to load and run the Jasmine suite without a browser.
 
 ## Configuration
 
-** Note: This project no longer uses the `jasmine.yml` file used by previous incarnations of Jasmine for configuration **
+**Note: This project no longer uses the `jasmine.yml` file used by previous incarnations of Jasmine for configuration.**
 
 This project adds the `chrome_remote` as a dependency; no need to add that to your `Gemfile`.
 
@@ -113,13 +113,13 @@ You can customize which files your test process includes by adding them directly
 
 This packages all of the Jasmine-specific JavaScript needed to run your tests.  You will likely not need to modify this file. 
 
-** You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite. **
+**You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite.**
 
 ### packs/spec.js
 
 This packages all of your specs.  By default it will recursively include any spec files (ending in `_spec.js` or `Spec.js`) in the `specs/javascript` directory, as well as any `.js` files in the `spec/javascript/helpers` directory.
 
-** You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite. **
+**You should not include this file in any application layouts or views.  Jasmine will automatically include it in the test page when running the suite.**
 
 ## Support
 
