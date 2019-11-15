@@ -25,8 +25,10 @@ describe 'A Rails app' do
   def install_jasmine
     `bundle exec rails g jasmine:install`
     expect($CHILD_STATUS).to be_success
+    expect(File.exist?('app/javascript/packs/jasmine.js')).to be_truthy
+    expect(File.exist?('app/javascript/packs/specs.js')).to be_truthy
     expect(File.exist?('spec/javascript/helpers/.gitkeep')).to be_truthy
-    expect(File.exist?('spec/javascript/support/jasmine_helper.rb')).to be_truthy
+    expect(File.exist?('config/initializers/jasmine.rb')).to be_truthy
     `bundle exec rails g jasmine:examples`
     expect(File.exist?('app/javascript/jasmine_examples/Player.js')).to be_truthy
     expect(File.exist?('app/javascript/jasmine_examples/Song.js')).to be_truthy

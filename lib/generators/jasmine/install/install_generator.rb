@@ -15,17 +15,8 @@ module Jasmine
 
       def copy_jasmine_files
         directory 'app'
+        directory 'config'
         directory 'spec'
-      end
-
-      def copy_webpack_initializer
-        destination_file_path = File.join('config', 'initializers', 'webpacker.rb')
-        initializer = "Webpacker::Compiler.watched_paths << 'spec/javascript/**/*.js'"
-        if File.exist?(File.expand_path(destination_file_path, destination_root))
-          append_to_file(destination_file_path, initializer)
-        else
-          create_file(destination_file_path, initializer)
-        end
       end
 
       def add_spec_directory_to_resolved_modules
@@ -47,7 +38,6 @@ module Jasmine
         # to the context slow down lookup?  It doesn't seem so, and the
         # intention of the first require line seems more clear.
         content = <<~CONTENT
-          const webpack = require('webpack');
           environment.resolvedModules.append('project root', '.');
         CONTENT
         append_to_file('config/webpack/environment.js', content)
