@@ -19,7 +19,8 @@ module Jasmine
     attr_reader :lookup_context, :extra_js
 
     def view
-      @view ||= ActionView::Base.with_empty_template_cache.new(lookup_context)
+      # Pass missing default arguments that are required for rails 6+
+      @view ||= ActionView::Base.with_empty_template_cache.new(lookup_context, [], nil)
     end
   end
 end
